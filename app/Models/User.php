@@ -58,4 +58,10 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'seller_id');
+    }
+
+
 }
