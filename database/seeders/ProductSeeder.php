@@ -13,8 +13,11 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $penjual = \App\Models\User::where('role', 'seller')->first();
+
         Product::insert([
             [
+                'seller_id' => $penjual->id,
                 'name' => 'Ikan Kering',
                 'description' => 'Ikan kering laut berkualitas.',
                 'price' => 0, // gunakan varian
@@ -24,6 +27,7 @@ class ProductSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'seller_id' => $penjual->id,
                 'name' => 'Lado Merah Giliang',
                 'description' => 'Cabai merah khas Sumatera.',
                 'price' => 0,
