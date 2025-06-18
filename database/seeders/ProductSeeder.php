@@ -35,6 +35,16 @@ class ProductSeeder extends Seeder
                 'stock' => 0,
                 'image' => 'lado_merah.jpg',
                 'created_at' => now()
+            ],
+            [
+                'seller_id' => $penjual->id,
+                'name' => 'Tomat',
+                'description' => 'tomat hasil pertanian nagari kami dijamin kualitas terbaik yang kami kirimkan kepada anda.',
+                'price' => 0,
+                'category' => 'Buah',
+                'stock' => 0,
+                'image' => 'tomat.jpg',
+                'created_at' => now()
             ]
         ]);
     }

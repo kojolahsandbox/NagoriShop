@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
@@ -11,6 +12,14 @@ class LandingController extends Controller
 {
     public function index()
     {
+        $slide = Setting::all();
+
+        $slides = [
+            'slide1' => $slide[0]->option_value,
+            'slide2' => $slide[1]->option_value,
+            'slide3' => $slide[2]->option_value,
+        ];
+
         $products = Product::all();
         // limit 10
         $products = $products->take(10);
@@ -34,6 +43,7 @@ class LandingController extends Controller
             ->shuffle()
             ->take(6);
         $data = [
+            'slides' => $slides,
             'products' => $products,
             'best_seller' => $best_seller,
             'flash_sale' => $flash_sale

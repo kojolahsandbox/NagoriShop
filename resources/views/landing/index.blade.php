@@ -6,15 +6,14 @@
     <!-- Banner Slider -->
     <div class="banner-slider">
         <div class="banner-images" id="bannerImages">
-            <img src="https://www.claudeusercontent.com/api/placeholder/480/150" alt="Promo Banner 1"
-                class="banner-image active" />
-            <img src="https://www.claudeusercontent.com/api/placeholder/480/150" alt="Promo Banner 2" class="banner-image" />
-            <img src="https://www.claudeusercontent.com/api/placeholder/480/150" alt="Promo Banner 3" class="banner-image" />
+            @foreach ($slides as $item)
+                <img src="{{ $item }}" alt="Promo Banner" class="banner-image {{ $loop->first ? 'active' : '' }}" />
+            @endforeach
         </div>
         <div class="banner-indicators" id="bannerIndicators">
-            <div class="indicator active"></div>
-            <div class="indicator"></div>
-            <div class="indicator"></div>
+            @foreach ($slides as $item)
+                <div class="indicator {{ $loop->first ? 'active' : '' }}"></div>
+            @endforeach
         </div>
     </div>
 
