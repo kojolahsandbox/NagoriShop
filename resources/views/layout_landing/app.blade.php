@@ -26,20 +26,20 @@
                     <div class="cart-icon">
                         <i class="fa-solid fa-cart-shopping"></i>
                     </div>
-                    <div class="message-icon message-badge">
+                    {{-- <div class="message-icon message-badge">
                         <i class="fa-solid fa-comment"></i>
                         <span class="badge">6</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
 
-        @yield('content');
+        @yield('content')
 
         <div style="height: 60px"></div>
 
         <div class="menu-bar">
-            <a href="#" class="menu-item active">
+            <a href="{{ url('/') }}" class="menu-item active">
                 <div class="menu-icon">
                     <i class="fa-solid fa-house"></i>
                 </div>

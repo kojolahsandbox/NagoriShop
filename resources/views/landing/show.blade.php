@@ -8,7 +8,7 @@
     <!-- Product Images -->
     <div class="product-images">
         <div class="main-image-container">
-            <img src="{{ asset('storage/products/' . $product->image) }}" alt="Ikan Kering Premium" class="main-image"
+            <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}" class="main-image"
                 id="mainImage" />
             {{-- <div class="discount-badge">-42%</div> --}}
             <button class="favorite-btn" id="favoriteBtn">

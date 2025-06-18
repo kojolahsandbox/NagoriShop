@@ -17,3 +17,10 @@ use App\Http\Controllers\LandingController;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/{name}/{slug}', [LandingController::class, 'show'])->name('product.show');
+
+Route::get('/{search}/', [LandingController::class, 'search'])->name('product.search');
+
+// 404
+Route::fallback(function () {
+    return view('404');
+});

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
+use App\Models\OrderItem;
 
 class LandingController extends Controller
 {
@@ -18,14 +19,24 @@ class LandingController extends Controller
         // desc
         $products = $products->sortByDesc('created_at');
 
+        // 6 products best seller
+        $best_seller = Product::select('products.*')
+            ->join('order_items', 'products.id', '=', 'order_items.product_id')
+            ->selectRaw('products.*, SUM(order_items.quantity) as total_quantity')
+            ->groupBy('products.id')
+            ->orderByDesc('total_quantity')
+            ->take(6)
+            ->get();
 
-        foreach ($products as $product) {
-            $product->variants = ProductVariant::where('product_id', $product->id)->get();
-            $product->seller = User::find($product->seller_id);
-        }
-
+        // product with category flash sale 
+        $flash_sale = Product::where('category', 'flash sale')
+            ->get()
+            ->shuffle()
+            ->take(6);
         $data = [
-            'products' => $products
+            'products' => $products,
+            'best_seller' => $best_seller,
+            'flash_sale' => $flash_sale
         ];
 
         return view('landing.index', $data);
@@ -59,7 +70,29 @@ class LandingController extends Controller
 
             return view('landing.show', $data);
         } else {
-            echo "Product Tidak ada.";
+            return view('404');
         }
     }
+
+    public function search($search)
+    {
+        $products = Product::where('name', 'like', '%' . $search . '%')
+            ->orWhere('category', 'like', '%' . $search . '%')
+            ->take(10)->get();
+
+        foreach ($products as $p) {
+            $p->variants = ProductVariant::where('product_id', $p->id)->get();
+            $p->seller = User::find($p->seller_id);
+        }
+
+        $others = Product::inRandomOrder()->take(10)->get();
+
+        return view('landing.search', [
+            'products' => $products,
+            'others' => $others
+        ]);
+
+    }
+
+
 }
