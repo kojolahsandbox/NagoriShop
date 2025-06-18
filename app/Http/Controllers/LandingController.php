@@ -25,7 +25,7 @@ class LandingController extends Controller
             ->selectRaw('products.*, SUM(order_items.quantity) as total_quantity')
             ->groupBy('products.id')
             ->orderByDesc('total_quantity')
-            ->take(6)
+            ->take(4)
             ->get();
 
         // product with category flash sale 
@@ -78,7 +78,12 @@ class LandingController extends Controller
     {
         $products = Product::where('name', 'like', '%' . $search . '%')
             ->orWhere('category', 'like', '%' . $search . '%')
-            ->take(10)->get();
+            ->orWhereHas('seller', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('address', 'like', '%' . $search . '%');
+            })
+            ->take(10)
+            ->get();
 
         foreach ($products as $p) {
             $p->variants = ProductVariant::where('product_id', $p->id)->get();

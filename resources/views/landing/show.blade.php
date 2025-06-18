@@ -40,7 +40,8 @@
         </div> --}}
 
         <div class="product-price-section">
-            <div class="current-price">Rp {{ number_format($product->price) }}</div>
+            <div class="current-price" id="productPrice">Rp
+                {{ number_format($product->variants[0]->price ?? $product->price) }}</div>
             {{-- <div class="price-details">
                 <span class="original-price">Rp150.000</span>
                 <span class="discount-percentage">42% OFF</span>
@@ -61,15 +62,10 @@
     <div class="variants-section">
         <div class="section-title">Pilih Varian</div>
         <div class="variant-options">
-            @php $no = 1 @endphp
+
             @foreach ($product->variants as $item)
-                @if ($no == 1)
-                    <div class="variant-option selected">{{ $item->variant }}</div>
-                @endif
-                <div class="variant-option">{{ $item->variant }}</div>
-                @php
-                    $no++;
-                @endphp
+                <div class="variant-option {{ $loop->first ? 'selected' : '' }}" data-price="{{ $item->price }}">
+                    {{ $item->variant }}</div>
             @endforeach
         </div>
     </div>
@@ -167,10 +163,11 @@
             <div class="seller-avatar">{{ $initials }}</div>
             <div class="seller-details">
                 <div class="seller-name">{{ $product->seller->name }}</div>
-                {{-- <div class="seller-stats">
-                    <span>⭐ 4.9 (12,5rb ulasan)</span>
-                    <span>📦 15,2rb produk</span>
-                </div> --}}
+                <div class="seller-stats">
+                    <span>📍 {{ strtoupper($product->seller->address) }}</span>
+                    {{-- <span>⭐ 4.9 (12,5rb ulasan)</span>
+                    <span>📦 15,2rb produk</span> --}}
+                </div>
             </div>
             <button class="chat-seller-btn">
                 <i class="fa-solid fa-comment"></i> Chat
@@ -236,24 +233,7 @@
                 });
             });
 
-            // Quantity controls
-            const quantityInput = document.getElementById("quantityInput");
-            const decreaseBtn = document.getElementById("decreaseBtn");
-            const increaseBtn = document.getElementById("increaseBtn");
 
-            decreaseBtn.addEventListener("click", function() {
-                let currentValue = parseInt(quantityInput.value);
-                if (currentValue > 1) {
-                    quantityInput.value = currentValue - 1;
-                }
-            });
-
-            increaseBtn.addEventListener("click", function() {
-                let currentValue = parseInt(quantityInput.value);
-                if (currentValue < 99) {
-                    quantityInput.value = currentValue + 1;
-                }
-            });
 
             // Description show more/less
             const showMoreBtn = document.getElementById("showMoreBtn");
@@ -281,5 +261,69 @@
             }, 5000);
         });
     </script>
+
+    <script>
+        const variantOptions = document.querySelectorAll(".variant-option");
+        const productPrice = document.getElementById("productPrice");
+
+        variantOptions.forEach((option) => {
+            option.addEventListener("click", function() {
+                variantOptions.forEach((opt) => opt.classList.remove("selected"));
+                this.classList.add("selected");
+
+                const price = this.getAttribute("data-price");
+                if (price) {
+                    productPrice.textContent = "Rp " + Number(price).toLocaleString('id-ID');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const quantityInput = document.getElementById("quantityInput");
+            const decreaseBtn = document.getElementById("decreaseBtn");
+            const increaseBtn = document.getElementById("increaseBtn");
+
+            // Ambil nilai min dan max dari atribut input
+            const getMin = () => parseInt(quantityInput.getAttribute("min")) || 1;
+            const getMax = () => parseInt(quantityInput.getAttribute("max")) || 1;
+
+            // Tombol minus
+            decreaseBtn.addEventListener("click", function() {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > getMin()) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+
+            // Tombol plus
+            increaseBtn.addEventListener("click", function() {
+
+                let currentValue = parseInt(quantityInput.value);
+                let max = getMax();
+
+                if (currentValue < max) {
+                    quantityInput.value = currentValue + 1;
+                } else {
+                    quantityInput.value = max; // opsional: paksa ke max jika melebihi
+                }
+            });
+
+            // Validasi saat input manual
+            quantityInput.addEventListener("input", function() {
+                let value = parseInt(this.value);
+                let max = getMax();
+                let min = getMin();
+
+                if (isNaN(value) || value < min) {
+                    this.value = min;
+                } else if (value > max) {
+                    this.value = max;
+                }
+            });
+        });
+    </script>
+
 
 @endsection

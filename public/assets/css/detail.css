@@ -5,6 +5,12 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+html,
+body {
+    touch-action: manipulation;
+    overscroll-behavior: none;
+}
+
 body {
     background-color: #f0f0f0;
 }

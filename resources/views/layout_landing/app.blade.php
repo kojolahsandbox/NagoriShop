@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>@yield('title') - Nagori Shop</title>
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -17,7 +17,8 @@
                     <div class="search-icon">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <input type="text" class="search-input" placeholder="Ayam Telur" />
+                    <input type="text" class="search-input" name="search" id="searchInput"
+                        placeholder="Ayam Telur | Payakumbuh | Buah" />
                     <div class="camera-icon">
                         <i class="fa-solid fa-camera"></i>
                     </div>
@@ -74,6 +75,21 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        const input = document.getElementById('searchInput');
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = input.value.trim();
+                if (query !== '') {
+                    const sanitizedQuery = encodeURIComponent(query);
+                    window.location.href = '/' + sanitizedQuery + '/';
+                }
+            }
+        });
+    </script>
 
     @yield('script')
 </body>
