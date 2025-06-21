@@ -65,12 +65,21 @@
                 <span class="notif-badge">46</span>
                 <span>Notifikasi</span>
             </a>
-            <a href="auth.html" class="menu-item">
-                <div class="menu-icon">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <span>Saya</span>
-            </a>
+            @auth
+                <a href="#!" class="menu-item">
+                    <div class="menu-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span>Saya</span>
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="menu-item">
+                    <div class="menu-icon">
+                        <i class="fa-solid fa-sign-in-alt"></i>
+                    </div>
+                    <span>Login</span>
+                </a>
+            @endauth
         </div>
     </div>
 
@@ -83,9 +92,10 @@
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const query = input.value.trim();
+
                 if (query !== '') {
                     const sanitizedQuery = encodeURIComponent(query);
-                    window.location.href = '/' + sanitizedQuery + '/';
+                    window.location.href = '/search?keyword=' + sanitizedQuery;
                 }
             }
         });

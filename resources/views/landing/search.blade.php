@@ -6,7 +6,7 @@
 
     <!-- Search Info -->
     <div class="search-info">
-        <div class="search-query">Hasil pencarian untuk "{{ request()->segment(1) }}"</div>
+        <div class="search-query">Hasil pencarian untuk "{{ request()->query('keyword') }}"</div>
     </div>
 
     <!-- Filter Section -->
