@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Models\Setting;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -84,8 +86,10 @@ class LandingController extends Controller
         }
     }
 
-    public function search($search)
+    public function search(Request $request)
     {
+        $search = $request->query('keyword');
+
         $products = Product::where('name', 'like', '%' . $search . '%')
             ->orWhere('category', 'like', '%' . $search . '%')
             ->orWhereHas('seller', function ($query) use ($search) {

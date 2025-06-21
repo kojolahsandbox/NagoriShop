@@ -66,7 +66,7 @@
                 <span>Notifikasi</span>
             </a>
             @auth
-                <a href="#!" class="menu-item">
+                <a href="{{ route('profile') }}" class="menu-item">
                     <div class="menu-icon">
                         <i class="fa-solid fa-user"></i>
                     </div>

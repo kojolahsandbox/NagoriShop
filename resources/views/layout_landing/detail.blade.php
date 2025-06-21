@@ -14,7 +14,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="javascript:history.back()"">
+                <a href="javascript:history.back()">
                     <div class="back-button">
                         <i class="fa-solid fa-arrow-left"></i>
                     </div>

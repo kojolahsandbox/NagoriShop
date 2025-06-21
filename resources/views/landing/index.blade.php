@@ -3,6 +3,20 @@
 @extends('layout_landing.app')
 
 @section('content')
+    @auth
+        @if (auth()->user()->role == 'customer')
+            <div class="greeting">
+                <div class="greeting-content">
+                    <div class="greeting-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="greeting-text">
+                        <span class="greeting-text">Selamat Datang, {{ auth()->user()->name }}!</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endauth
     <!-- Banner Slider -->
     <div class="banner-slider">
         <div class="banner-images" id="bannerImages">

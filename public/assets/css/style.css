@@ -102,6 +102,32 @@ body {
     margin-left: 10px;
 }
 
+/* greeting */
+.greeting {
+    color: #ff4b2b;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.greeting-content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.greeting-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: ff4b2b;
+}
+
+.greeting-icon {
+    color: ff4b2b;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
 /* Slider styles */
 .slider-container {
     position: relative;

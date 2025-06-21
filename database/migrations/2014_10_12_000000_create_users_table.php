@@ -20,6 +20,7 @@ return new class extends Migration {
 
             // Tambahan kolom role
             $table->enum('role', ['administrator', 'seller', 'customer'])->default('customer');
+            $table->enum('status', ['active', 'nonactive', 'pending'])->default('pending');
 
             // Opsional profil tambahan
             $table->text('address')->nullable();
