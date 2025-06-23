@@ -54,6 +54,8 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile_update');
+
+    Route::post('/password/update', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
 
 // Multi-role access (admin or seller)

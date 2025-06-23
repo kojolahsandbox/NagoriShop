@@ -33,6 +33,18 @@
                     {{ session('success') }}
                 </div>
             @endif
+
+            @if ($errors->any())
+                <div style="color:rgb(141, 10, 10);">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            @if (session('alert'))
+                <div style="color:rgb(141, 10, 10);">
+                    {{ session('alert') }}
+                </div>
+            @endif
         </div>
 
         <!-- Account Settings -->
@@ -174,11 +186,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="changePasswordForm">
+                <form id="changePasswordForm" method="POST" action="{{ route('password.update') }}">
+                    @csrf
                     <div class="form-group">
                         <label class="form-label">Password Lama</label>
                         <div class="password-toggle">
-                            <input type="password" class="form-input" id="oldPassword" required />
+                            <input type="password" name="current_password" class="form-input" id="oldPassword"
+                                required />
                             <button type="button" class="toggle-password" onclick="togglePassword('oldPassword')">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
@@ -188,7 +202,7 @@
                     <div class="form-group">
                         <label class="form-label">Password Baru</label>
                         <div class="password-toggle">
-                            <input type="password" class="form-input" id="newPassword" required />
+                            <input type="password" name="password" class="form-input" id="newPassword" required />
                             <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
@@ -198,7 +212,8 @@
                     <div class="form-group">
                         <label class="form-label">Konfirmasi Password Baru</label>
                         <div class="password-toggle">
-                            <input type="password" class="form-input" id="confirmPassword" required />
+                            <input type="password" name="password_confirmation" class="form-input"
+                                id="confirmPassword" required />
                             <button type="button" class="toggle-password"
                                 onclick="togglePassword('confirmPassword')">
                                 <i class="fa-solid fa-eye"></i>
@@ -649,7 +664,7 @@
         document
             .getElementById("changePasswordForm")
             .addEventListener("submit", function(e) {
-                e.preventDefault();
+                // e.preventDefault();
 
                 const oldPassword = document.getElementById("oldPassword").value;
                 const newPassword = document.getElementById("newPassword").value;
