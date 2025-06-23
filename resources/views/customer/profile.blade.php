@@ -28,6 +28,11 @@
             </div>
             <div class="profile-name" id="profileName">John Doe</div>
             <div class="profile-email" id="profileEmail">john.doe@example.com</div>
+            @if (session('success'))
+                <div style="color:#ff4b2b;">
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
 
         <!-- Account Settings -->
@@ -240,33 +245,7 @@
     </div>
 
     <!-- Notifications Modal -->
-    <div id="notificationsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Notifikasi</h2>
-                <button class="close-btn" onclick="closeModal('notificationsModal')">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            </div>
-            <div class="filter-tabs">
-                <button class="filter-tab active" onclick="filterNotifications('all')">
-                    Semua
-                </button>
-                <button class="filter-tab" onclick="filterNotifications('order')">
-                    Pesanan
-                </button>
-                <button class="filter-tab" onclick="filterNotifications('promo')">
-                    Promo
-                </button>
-                <button class="filter-tab" onclick="filterNotifications('system')">
-                    Sistem
-                </button>
-            </div>
-            <div class="modal-body modal-body-scrollable" id="notificationsContent">
-                <!-- Notifications will be loaded here -->
-            </div>
-        </div>
-    </div>
+    <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -275,19 +254,41 @@
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="editProfileForm">
+            <div class="modal-body modal-body-scrollable">
+                <form id="editProfileForm" method="POST" action="{{ route('profile_update') }}">
+                    @csrf
                     <div class="form-group">
                         <label class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-input" id="editName" required />
+                        <input type="text" name="name" class="form-input" id="editName" required />
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="editEmail" required />
+                        <input type="email" name="email" class="form-input" id="editEmail" required />
                     </div>
                     <div class="form-group">
                         <label class="form-label">Nomor Telepon</label>
-                        <input type="tel" class="form-input" id="editPhone" />
+                        <input type="tel" name="phone" required class="form-input" id="editPhone" />
+                    </div>
+                    <!-- Address fields with API -->
+                    <div class="form-group">
+                        <label class="form-label">Provinsi</label>
+                        <select id="provinsi" name="province" class="form-input" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kota/Kabupaten</label>
+                        <select id="kota" name="city" class="form-input" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kecamatan</label>
+                        <select id="kecamatan" name="district" class="form-input" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kelurahan</label>
+                        <select id="kelurahan" name="village" class="form-input" name="address" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Alamat</label>
+                        <input id="editAddress" name="address" class="form-input" name="address" required></input>
                     </div>
                     <button type="submit" class="btn-primary">Simpan Perubahan</button>
                     <div class="success-message" id="profileSuccessMessage">
@@ -408,33 +409,33 @@
 
             if (filteredOrders.length === 0) {
                 ordersContent.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-box-open"></i>
-                        <h3>Tidak ada pesanan</h3>
-                        <p>Belum ada pesanan untuk kategori ini</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fa-solid fa-box-open"></i>
+                            <h3>Tidak ada pesanan</h3>
+                            <p>Belum ada pesanan untuk kategori ini</p>
+                        </div>
+                    `;
                 return;
             }
 
             ordersContent.innerHTML = filteredOrders
                 .map(
                     (order) => `
-                <div class="order-item">
-                    <div class="order-header">
-                        <span class="order-id">#${order.id}</span>
-                        <span class="order-status status-${order.status}">${order.statusText}</span>
-                    </div>
-                    <div class="order-details">
-                        <img src="${order.image}" alt="${order.product}" class="order-image">
-                        <div class="order-info">
-                            <div class="order-product">${order.product}</div>
-                            <div class="order-price">${order.price}</div>
+                    <div class="order-item">
+                        <div class="order-header">
+                            <span class="order-id">#${order.id}</span>
+                            <span class="order-status status-${order.status}">${order.statusText}</span>
                         </div>
+                        <div class="order-details">
+                            <img src="${order.image}" alt="${order.product}" class="order-image">
+                            <div class="order-info">
+                                <div class="order-product">${order.product}</div>
+                                <div class="order-price">${order.price}</div>
+                            </div>
+                        </div>
+                        <div class="order-date">${order.date}</div>
                     </div>
-                    <div class="order-date">${order.date}</div>
-                </div>
-            `
+                `
                 )
                 .join("");
         }
@@ -454,48 +455,48 @@
 
             if (filteredNotifications.length === 0) {
                 notificationsContent.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-bell-slash"></i>
-                        <h3>Tidak ada notifikasi</h3>
-                        <p>Belum ada notifikasi untuk kategori ini</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fa-solid fa-bell-slash"></i>
+                            <h3>Tidak ada notifikasi</h3>
+                            <p>Belum ada notifikasi untuk kategori ini</p>
+                        </div>
+                    `;
                 return;
             }
 
             notificationsContent.innerHTML = filteredNotifications
                 .map(
                     (notification) => `
-                <div class="notification-item ${
-                  notification.unread ? "notification-unread" : ""
-                }">
-                    <div class="notification-header">
-                        <div class="notification-icon notif-${
-                          notification.type
-                        }">
-                            <i class="fa-solid fa-${getNotificationIcon(
+                    <div class="notification-item ${
+                      notification.unread ? "notification-unread" : ""
+                    }">
+                        <div class="notification-header">
+                            <div class="notification-icon notif-${
                               notification.type
-                            )}"></i>
+                            }">
+                                <i class="fa-solid fa-${getNotificationIcon(
+                                  notification.type
+                                )}"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">${
+                                  notification.title
+                                }</div>
+                                <div class="notification-message">${
+                                  notification.message
+                                }</div>
+                                <div class="notification-time">${
+                                  notification.time
+                                }</div>
+                            </div>
+                            ${
+                              notification.unread
+                                ? '<div class="notification-dot"></div>'
+                                : ""
+                            }
                         </div>
-                        <div class="notification-content">
-                            <div class="notification-title">${
-                              notification.title
-                            }</div>
-                            <div class="notification-message">${
-                              notification.message
-                            }</div>
-                            <div class="notification-time">${
-                              notification.time
-                            }</div>
-                        </div>
-                        ${
-                          notification.unread
-                            ? '<div class="notification-dot"></div>'
-                            : ""
-                        }
                     </div>
-                </div>
-            `
+                `
                 )
                 .join("");
         }
@@ -539,6 +540,7 @@
             name: "{{ auth()->user()->name }}",
             email: "{{ auth()->user()->email }}",
             phone: "{{ auth()->user()->phone }}",
+            address: "{{ auth()->user()->address }}",
         };
 
         // Initialize profile
@@ -554,6 +556,7 @@
             document.getElementById("editName").value = userData.name;
             document.getElementById("editEmail").value = userData.email;
             document.getElementById("editPhone").value = userData.phone;
+            document.getElementById("editAddress").value = userData.address;
         }
 
         // Generate initials from name
@@ -695,33 +698,92 @@
             });
 
         // Edit profile form handler
-        document
-            .getElementById("editProfileForm")
-            .addEventListener("submit", function(e) {
-                e.preventDefault();
+        // api address
+        document.addEventListener('DOMContentLoaded', function() {
+            const baseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
-                const newName = document.getElementById("editName").value;
-                const newEmail = document.getElementById("editEmail").value;
-                const newPhone = document.getElementById("editPhone").value;
+            const provinsiSelect = document.getElementById('provinsi');
+            const kotaSelect = document.getElementById('kota');
+            const kecamatanSelect = document.getElementById('kecamatan');
+            const kelurahanSelect = document.getElementById('kelurahan');
 
-                // Update user data
-                userData.name = newName;
-                userData.email = newEmail;
-                userData.phone = newPhone;
+            // Store user's address data
+            const userAddress = {
+                province: "{{ auth()->user()->province ?? '' }}",
+                city: "{{ auth()->user()->city ?? '' }}",
+                district: "{{ auth()->user()->district ?? '' }}",
+                village: "{{ auth()->user()->village ?? '' }}"
+            };
 
-                // Update UI
-                document.getElementById("profileName").textContent = newName;
-                document.getElementById("profileEmail").textContent = newEmail;
-                document.getElementById("profileInitial").textContent =
-                    generateInitials(newName);
+            // Load Provinsi
+            fetch(`${baseUrl}/provinces.json`)
+                .then(res => res.json())
+                .then(data => {
+                    provinsiSelect.innerHTML = `<option value="">Pilih Provinsi</option>`;
+                    data.forEach(prov => {
+                        const selected = prov.id == userAddress.province ? 'selected' : '';
+                        provinsiSelect.innerHTML +=
+                            `<option value="${prov.id}" ${selected}>${prov.name}</option>`;
+                    });
 
-                // Show success message
-                document.getElementById("profileSuccessMessage").style.display =
-                    "block";
-                setTimeout(() => {
-                    closeModal("editProfileModal");
-                }, 2000);
+                    // If province is set, trigger change to load cities
+                    if (userAddress.province) {
+                        provinsiSelect.dispatchEvent(new Event('change'));
+                    }
+                });
+
+            provinsiSelect.addEventListener('change', function() {
+                fetch(`${baseUrl}/regencies/${this.value}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kotaSelect.innerHTML = `<option value="">Pilih Kota/Kabupaten</option>`;
+                        kecamatanSelect.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+                        kelurahanSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+                        data.forEach(kota => {
+                            const selected = kota.id == userAddress.city ? 'selected' : '';
+                            kotaSelect.innerHTML +=
+                                `<option value="${kota.id}" ${selected}>${kota.name}</option>`;
+                        });
+
+                        // If city is set, trigger change to load districts
+                        if (userAddress.city) {
+                            kotaSelect.dispatchEvent(new Event('change'));
+                        }
+                    });
             });
+
+            kotaSelect.addEventListener('change', function() {
+                fetch(`${baseUrl}/districts/${this.value}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kecamatanSelect.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+                        kelurahanSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+                        data.forEach(kec => {
+                            const selected = kec.id == userAddress.district ? 'selected' : '';
+                            kecamatanSelect.innerHTML +=
+                                `<option value="${kec.id}" ${selected}>${kec.name}</option>`;
+                        });
+
+                        // If district is set, trigger change to load villages
+                        if (userAddress.district) {
+                            kecamatanSelect.dispatchEvent(new Event('change'));
+                        }
+                    });
+            });
+
+            kecamatanSelect.addEventListener('change', function() {
+                fetch(`${baseUrl}/villages/${this.value}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kelurahanSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+                        data.forEach(kel => {
+                            const selected = kel.id == userAddress.village ? 'selected' : '';
+                            kelurahanSelect.innerHTML +=
+                                `<option value="${kel.id}" ${selected}>${kel.name}</option>`;
+                        });
+                    });
+            });
+        });
 
         // Change profile picture
         function changeProfilePicture() {
@@ -752,6 +814,8 @@
             initializeProfile();
         });
     </script>
+    </div>
+
 </body>
 
 </html>

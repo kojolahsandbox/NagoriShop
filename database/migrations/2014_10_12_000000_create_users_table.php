@@ -22,6 +22,13 @@ return new class extends Migration {
             $table->enum('role', ['administrator', 'seller', 'customer'])->default('customer');
             $table->enum('status', ['active', 'nonactive', 'pending'])->default('pending');
 
+            // alamat 
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
+            $table->string('village')->nullable();
+
+
             // Opsional profil tambahan
             $table->text('address')->nullable();
             $table->text('last_login')->nullable();

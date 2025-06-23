@@ -133,6 +133,7 @@ class AuthController extends Controller
             // Update status user menjadi 'active'
             $user->status = 'active';
             $user->remember_token = md5($token);
+            $user->email_verified_at = now();
             $user->save();
 
             // Redirect ke halaman login dengan pesan sukses

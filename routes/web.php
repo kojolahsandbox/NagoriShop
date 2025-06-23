@@ -53,6 +53,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     });
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile_update');
 });
 
 // Multi-role access (admin or seller)
