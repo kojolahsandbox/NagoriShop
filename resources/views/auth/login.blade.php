@@ -55,6 +55,12 @@
                             </div>
                         @endif
 
+                        @if (session('success'))
+                            <div style="color:rgb(40, 192, 9);">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
 
                         <div class="forgot-password">
                             <a href="#" onclick="showPage('forgot-password-page')">Lupa kata sandi?</a>
@@ -103,28 +109,29 @@
                         <div class="tab active" id="email-tab" onclick="switchTab('email')">
                             Email
                         </div>
-                        <div class="tab" id="phone-tab" onclick="switchTab('phone')">
+                        {{-- <div class="tab" id="phone-tab" onclick="switchTab('phone')">
                             Nomor Telepon
-                        </div>
+                        </div> --}}
                     </div>
 
-                    <form id="register-form-email" class="active">
+                    <form id="register-form-email" method="POST" class="active" action="{{ route('register') }}">
+                        @csrf
                         <div class="input-group">
                             <label for="reg-name">Nama Lengkap</label>
-                            <input type="text" id="reg-name" class="input-field"
+                            <input type="text" name="name" id="reg-name" required class="input-field"
                                 placeholder="Masukkan nama lengkap" />
                         </div>
 
                         <div class="input-group">
                             <label for="reg-email">Email</label>
-                            <input type="email" id="reg-email" class="input-field"
+                            <input type="email" name="email" id="reg-email" required class="input-field"
                                 placeholder="Contoh: nama@email.com" />
                         </div>
 
                         <div class="input-group">
                             <label for="reg-password">Kata Sandi</label>
                             <div class="password-field-container">
-                                <input type="password" id="reg-password" class="input-field"
+                                <input type="password" name="password" required id="reg-password" class="input-field"
                                     placeholder="Minimal 8 karakter" />
                                 <div class="toggle-password" onclick="togglePassword('reg-password')">
                                     <i class="fa-solid fa-eye"></i>
@@ -133,7 +140,7 @@
                         </div>
 
                         <div class="terms-checkbox">
-                            <input type="checkbox" id="terms" />
+                            <input type="checkbox" required id="terms" />
                             <label for="terms" class="terms-text">
                                 Dengan mendaftar, saya menyetujui
                                 <a href="#">Syarat & Ketentuan</a> serta
@@ -141,7 +148,7 @@
                             </label>
                         </div>
 
-                        <button type="button" class="submit-button">Daftar</button>
+                        <button type="submit" class="submit-button">Daftar</button>
                     </form>
 
                     <form id="register-form-phone" style="display: none">
@@ -167,6 +174,17 @@
                                 </div>
                             </div>
                         </div>
+                        @if ($errors->any())
+                            <div style="color:rgb(141, 10, 10);">
+                                {{ $errors->first() }}
+                            </div>
+                        @endif
+
+                        @if (session('alert'))
+                            <div style="color:rgb(141, 10, 10);">
+                                {{ session('alert') }}
+                            </div>
+                        @endif
 
                         <div class="terms-checkbox">
                             <input type="checkbox" id="phone-terms" />

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Mail\RegisterMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,11 @@ use App\Http\Controllers\ProfileController;
 */
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+//verfication
+Route::get('/verify/{token}', [AuthController::class, 'verify'])->name('verify');
+
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -62,4 +68,14 @@ Route::middleware(['auth', 'role:administrator,seller'])->group(function () {
 // 404
 Route::fallback(function () {
     return view('404');
+});
+
+Route::get('/test-email', function () {
+    $data = [
+        'name' => 'Test User',
+        'verification_code' => '12345',
+    ];
+    Mail::to('aqilrahman23@gmail.com')->send(new RegisterMail($data));
+
+    return 'Email telah dikirim.';
 });
