@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
 
+use Illuminate\Support\Str;
+
 class ProductSeeder extends Seeder
 {
     /**
@@ -17,6 +19,7 @@ class ProductSeeder extends Seeder
 
         Product::insert([
             [
+                'id' => Str::uuid(),
                 'seller_id' => $penjual->id,
                 'name' => 'Ikan Kering',
                 'description' => 'Ikan kering laut berkualitas.',
@@ -27,6 +30,7 @@ class ProductSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'seller_id' => $penjual->id,
                 'name' => 'Lado Merah Giliang',
                 'description' => 'Cabai merah khas Sumatera.',
@@ -37,6 +41,7 @@ class ProductSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'seller_id' => $penjual->id,
                 'name' => 'Tomat',
                 'description' => 'tomat hasil pertanian nagari kami dijamin kualitas terbaik yang kami kirimkan kepada anda.',

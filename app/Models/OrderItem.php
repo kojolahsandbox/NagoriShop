@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class OrderItem extends Model
 {
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
         'order_id',
         'product_id',
@@ -14,6 +17,18 @@ class OrderItem extends Model
         'quantity',
         'unit_price'
     ];
+
+    /**
+     * Auto-generate UUID saat creating
+     */
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (!$model->getKey()) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
 
     public function order()
     {

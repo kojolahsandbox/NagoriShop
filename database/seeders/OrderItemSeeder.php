@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\OrderItem;
+use Illuminate\Support\Str;
 
 class OrderItemSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class OrderItemSeeder extends Seeder
         // Transaksi "completed"
         OrderItem::insert([
             [
+                'id' => Str::uuid(),
                 'order_id' => $orders[0]->id,
                 'product_id' => $ikan->id,
                 'product_name' => 'Ikan Kering',
@@ -36,6 +38,7 @@ class OrderItemSeeder extends Seeder
                 'unit_price' => 87040,
             ],
             [
+                'id' => Str::uuid(),
                 'order_id' => $orders[0]->id,
                 'product_id' => $lado->id,
                 'product_name' => 'Lado Merah Giliang',
@@ -46,7 +49,8 @@ class OrderItemSeeder extends Seeder
         ]);
 
         // Transaksi "shipped"
-        OrderItem::create([
+        OrderItem::insert([
+            'id' => Str::uuid(),
             'order_id' => $orders[1]->id,
             'product_id' => $lado->id,
             'product_name' => 'Lado Merah Giliang',
@@ -56,7 +60,8 @@ class OrderItemSeeder extends Seeder
         ]);
 
         // Transaksi "paid"
-        OrderItem::create([
+        OrderItem::insert([
+            'id' => Str::uuid(),
             'order_id' => $orders[2]->id,
             'product_id' => $ikan->id,
             'product_name' => 'Ikan Kering',

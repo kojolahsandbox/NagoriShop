@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\ProductVariant;
 
+use Illuminate\Support\Str;
+
 class ProductVariantSeeder extends Seeder
 {
     /**
@@ -19,6 +21,7 @@ class ProductVariantSeeder extends Seeder
 
         ProductVariant::insert([
             [
+                'id' => Str::uuid(),
                 'product_id' => $ikan->id,
                 'variant' => 'Kemasan 250g',
                 'price' => 29000,
@@ -26,6 +29,7 @@ class ProductVariantSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'product_id' => $ikan->id,
                 'variant' => 'Kemasan 500g',
                 'price' => 87040,
@@ -33,6 +37,7 @@ class ProductVariantSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'product_id' => $lado->id,
                 'variant' => 'Kemasan 250g',
                 'price' => 36224,

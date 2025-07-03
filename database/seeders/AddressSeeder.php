@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Address;
+use Illuminate\Support\Str;
 
 class AddressSeeder extends Seeder
 {
@@ -16,7 +17,8 @@ class AddressSeeder extends Seeder
     {
         $pembeli = User::where('email', 'pembeli@example.com')->first();
 
-        Address::create([
+        Address::insert([
+            'id' => Str::uuid(),
             'user_id' => $pembeli->id,
             'recipient_name' => 'Budi Santoso',
             'phone' => '081234567890',

@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Address;
 use Illuminate\Support\Carbon;
 
+use Illuminate\Support\Str;
+
 class OrderSeeder extends Seeder
 {
     /**
@@ -20,6 +22,7 @@ class OrderSeeder extends Seeder
 
         Order::insert([
             [
+                'id' => Str::uuid(),
                 'user_id' => $pembeli->id,
                 'address_id' => $alamat->id,
                 'shipping_fee' => 18000,
@@ -32,6 +35,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now()->subDays(2),
             ],
             [
+                'id' => Str::uuid(),
                 'user_id' => $pembeli->id,
                 'address_id' => $alamat->id,
                 'shipping_fee' => 10000,
@@ -44,6 +48,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now()->subDay(),
             ],
             [
+                'id' => Str::uuid(),
                 'user_id' => $pembeli->id,
                 'address_id' => $alamat->id,
                 'shipping_fee' => 8000,
@@ -56,6 +61,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => Str::uuid(),
                 'user_id' => $pembeli->id,
                 'address_id' => $alamat->id,
                 'shipping_fee' => 0,
@@ -68,6 +74,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => Str::uuid(),
                 'user_id' => $pembeli->id,
                 'address_id' => $alamat->id,
                 'shipping_fee' => 0,

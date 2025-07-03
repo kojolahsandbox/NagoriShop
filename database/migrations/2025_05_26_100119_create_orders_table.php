@@ -11,9 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('address_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
+            $table->uuid('address_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
             $table->decimal('shipping_fee', 10, 2)->default(0);
             $table->enum('shipping_status', ['pending', 'confirmed'])->default('pending');
             $table->string('payment_method')->nullable();

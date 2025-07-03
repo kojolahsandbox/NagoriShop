@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+use Illuminate\Support\Str;
+
 class UserSeeder extends Seeder
 {
     /**
@@ -16,6 +18,7 @@ class UserSeeder extends Seeder
     {
         User::insert([
             [
+                'id' => Str::uuid(),
                 'name' => 'Admin Utama',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password'),
@@ -24,6 +27,7 @@ class UserSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'name' => 'Toko Nagori',
                 'email' => 'penjual@example.com',
                 'password' => Hash::make('password'),
@@ -32,6 +36,7 @@ class UserSeeder extends Seeder
                 'created_at' => now()
             ],
             [
+                'id' => Str::uuid(),
                 'name' => 'Pembeli Budi',
                 'email' => 'pembeli@example.com',
                 'password' => Hash::make('password'),
