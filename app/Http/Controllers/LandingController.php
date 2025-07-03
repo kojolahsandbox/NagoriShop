@@ -14,13 +14,17 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $slide = Setting::all();
+        $settings = Setting::all();
 
-        $slides = [
-            'slide1' => $slide[0]->option_value,
-            'slide2' => $slide[1]->option_value,
-            'slide3' => $slide[2]->option_value,
-        ];
+        $slides = [];
+
+        foreach ($settings as $setting) {
+            if (str_contains($setting->option_key, 'slide')) {
+                // Ambil nomor dari option_key, contoh: 'slide_1' jadi '1'
+                $number = preg_replace('/[^0-9]/', '', $setting->option_key);
+                $slides['slides' . $number] = $setting->option_value;
+            }
+        }
 
         $products = Product::all();
         // limit 10
