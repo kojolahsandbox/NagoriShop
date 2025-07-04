@@ -260,6 +260,34 @@
     </div>
 
     <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Notifikasi</h2>
+                <button class="close-btn" onclick="closeModal('notificationsModal')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterNotifications('all')">
+                    Semua
+                </button>
+                <button class="filter-tab" onclick="filterNotifications('order')">
+                    Pesanan
+                </button>
+                <button class="filter-tab" onclick="filterNotifications('promo')">
+                    Promo
+                </button>
+                <button class="filter-tab" onclick="filterNotifications('system')">
+                    Sistem
+                </button>
+            </div>
+            <div class="modal-body modal-body-scrollable" id="notificationsContent">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
@@ -590,11 +618,19 @@
 
         function openEditProfileModal() {
             document.getElementById("editProfileModal").classList.add("show");
+            // Ensure form is populated with current user data
+            document.getElementById("editName").value = userData.name;
+            document.getElementById("editEmail").value = userData.email;
+            document.getElementById("editPhone").value = userData.phone;
+            document.getElementById("editAddress").value = userData.address;
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove("show");
-            clearForm(modalId);
+            // Only clear password form, not profile form
+            if (modalId === "changePasswordModal") {
+                clearForm(modalId);
+            }
         }
 
         function clearForm(modalId) {

@@ -100,6 +100,7 @@ class LandingController extends Controller
                 $query->where('name', 'like', '%' . $search . '%')
                     ->orWhere('address', 'like', '%' . $search . '%');
             })
+            ->inRandomOrder()
             ->take(10)
             ->get();
 

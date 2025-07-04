@@ -34,43 +34,43 @@
     <!-- Category Slider -->
     <div class="category-slider">
         <div class="category-container">
-            <a href="{{ url('sapi') }}" class="category-item">
+            <a href="{{ url('search?keyword=sapi') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-cow"></i>
                 </div>
                 <span class="category-name">Sapi</span>
             </a>
-            <a href="{{ url('telur') }}" class="category-item">
+            <a href="{{ url('search?keyword=telur') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-egg"></i>
                 </div>
                 <span class="category-name">Telur</span>
             </a>
-            <a href="{{ url('sayur') }}" class="category-item">
+            <a href="{{ url('search?keyword=sayur') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-pepper-hot"></i>
                 </div>
                 <span class="category-name">Sayur</span>
             </a>
-            <a href="{{ url('buah') }}" class="category-item">
+            <a href="{{ url('search?keyword=buah') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-regular fa-lemon"></i>
                 </div>
                 <span class="category-name">Buah</span>
             </a>
-            <a href="{{ url('ayam') }}" class="category-item">
+            <a href="{{ url('search?keyword=ayam') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-drumstick-bite"></i>
                 </div>
                 <span class="category-name">Ayam</span>
             </a>
-            <a href="{{ url('rempah') }}" class="category-item">
+            <a href="{{ url('search?keyword=rempah') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-mortar-pestle"></i>
                 </div>
                 <span class="category-name">Rempah</span>
             </a>
-            <a href="{{ url('ikan') }}" class="category-item">
+            <a href="{{ url('search?keyword=ikan') }}" class="category-item">
                 <div class="category-icon">
                     <i class="fa-solid fa-fish"></i>
                 </div>
