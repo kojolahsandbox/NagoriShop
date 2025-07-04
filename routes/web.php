@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CheckoutController;
 use App\Mail\RegisterMail;
 
 /*
@@ -28,7 +29,6 @@ Route::get('/verify/{token}', [AuthController::class, 'verify'])->name('verify')
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
-Route::get('/{name}/{slug}', [LandingController::class, 'show'])->name('product.show');
 
 Route::get('/search', [LandingController::class, 'search'])->name('product.search');
 
@@ -52,6 +52,8 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
         return 'customer profil';
     });
 
+    Route::post('/confirmation', [CheckoutController::class, 'confirmation'])->name('confirmation');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile_update');
 
@@ -67,6 +69,7 @@ Route::middleware(['auth', 'role:administrator,seller'])->group(function () {
 
 
 
+Route::get('/{name}/{slug}', [LandingController::class, 'show'])->name('product.show');
 
 // 404
 Route::fallback(function () {

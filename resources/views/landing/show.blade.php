@@ -65,9 +65,8 @@
             <div class="variant-options">
 
                 @foreach ($product->variants as $item)
-                    <div class="variant-option {{ $loop->first ? 'selected' : '' }}" 
-                         data-price="{{ $item->price }}"
-                         data-stock="{{ $item->stock ?? $product->stock }}">
+                    <div class="variant-option {{ $loop->first ? 'selected' : '' }}" data-id="{{ $item->id }}"
+                        data-price="{{ $item->price }}" data-stock="{{ $item->stock ?? $product->stock }}">
                         {{ $item->variant }}</div>
                 @endforeach
             </div>
@@ -79,11 +78,12 @@
         <div class="section-title">Jumlah</div>
         <div class="quantity-controls">
             <button class="quantity-btn" id="decreaseBtn">-</button>
-            <input type="number" class="quantity-input" value="1" min="1" 
-                max="{{ $product->variants->count() > 0 ? ($product->variants[0]->stock ?? $product->stock) : $product->stock }}"
+            <input type="number" class="quantity-input" value="1" min="1"
+                max="{{ $product->variants->count() > 0 ? $product->variants[0]->stock ?? $product->stock : $product->stock }}"
                 id="quantityInput" />
             <button class="quantity-btn" id="increaseBtn">+</button>
-            <span class="stock-info" id="stockInfo">Stok: {{ $product->variants->count() > 0 ? ($product->variants[0]->stock ?? $product->stock) : $product->stock }}</span>
+            <span class="stock-info" id="stockInfo">Stok:
+                {{ $product->variants->count() > 0 ? $product->variants[0]->stock ?? $product->stock : $product->stock }}</span>
         </div>
     </div>
 
@@ -205,8 +205,15 @@
         <button class="action-btn add-to-cart-btn">
             <i class="fa-solid fa-cart-plus"></i> Keranjang
         </button>
-        <button class="action-btn buy-now-btn">Beli Sekarang</button>
+        <form id="buyNowForm" action="{{ route('confirmation') }}" method="POST">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" id="quantity" value="1">
+            <input type="hidden" name="variant_id" id="variant_id" value="">
+            <button type="submit" class="action-btn buy-now-btn">Beli Sekarang</button>
+        </form>
     </div>
+
 
 @endsection
 
@@ -280,18 +287,18 @@
 
                 const price = this.getAttribute("data-price");
                 const stock = this.getAttribute("data-stock");
-                
+
                 if (price) {
                     productPrice.textContent = "Rp " + Number(price).toLocaleString('id-ID');
                 }
-                
+
                 if (stock) {
                     // Update stock display
                     stockInfo.textContent = "Stok: " + stock;
-                    
+
                     // Update quantity input max attribute
                     quantityInput.setAttribute("max", stock);
-                    
+
                     // Reset quantity to 1 or max stock if current quantity exceeds new max
                     if (parseInt(quantityInput.value) > parseInt(stock)) {
                         quantityInput.value = stock;
@@ -347,5 +354,42 @@
         });
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const variantOptions = document.querySelectorAll(".variant-option");
+            const buyNowBtn = document.querySelector(".buy-now-btn");
+            const quantityInput = document.getElementById("quantityInput");
+            const quantityField = document.getElementById("quantity");
+            const variantField = document.getElementById("variant_id");
 
+            let selectedVariant = document.querySelector(".variant-option.selected");
+
+            // Pilih varian dan update selected
+            variantOptions.forEach((option) => {
+                option.addEventListener("click", function() {
+                    // Hapus kelas 'selected' dari semua varian
+                    variantOptions.forEach((opt) => opt.classList.remove("selected"));
+                    // Tandai varian ini sebagai yang dipilih
+                    this.classList.add("selected");
+
+                    // Simpan varian yang dipilih
+                    selectedVariant = this;
+
+                    // Update nilai input variant_id dengan data-id varian yang dipilih
+                    variantField.value = this.getAttribute("data-id");
+                });
+            });
+
+            // Tombol Beli Sekarang
+            buyNowBtn.addEventListener("click", function(event) {
+                // Jika varian telah dipilih, update variant_id di form
+                if (selectedVariant) {
+                    variantField.value = selectedVariant.getAttribute("data-id");
+                }
+
+                // Update nilai kuantitas di form sebelum mengirim
+                quantityField.value = quantityInput.value;
+            });
+        });
+    </script>
 @endsection
