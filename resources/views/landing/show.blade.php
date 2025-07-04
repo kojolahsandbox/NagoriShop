@@ -59,26 +59,31 @@
     </div>
 
     <!-- Variants Section -->
-    <div class="variants-section">
-        <div class="section-title">Pilih Varian</div>
-        <div class="variant-options">
+    @if ($product->variants->count() > 0)
+        <div class="variants-section">
+            <div class="section-title">Pilih Varian</div>
+            <div class="variant-options">
 
-            @foreach ($product->variants as $item)
-                <div class="variant-option {{ $loop->first ? 'selected' : '' }}" data-price="{{ $item->price }}">
-                    {{ $item->variant }}</div>
-            @endforeach
+                @foreach ($product->variants as $item)
+                    <div class="variant-option {{ $loop->first ? 'selected' : '' }}" 
+                         data-price="{{ $item->price }}"
+                         data-stock="{{ $item->stock ?? $product->stock }}">
+                        {{ $item->variant }}</div>
+                @endforeach
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Quantity Section -->
     <div class="quantity-section">
         <div class="section-title">Jumlah</div>
         <div class="quantity-controls">
             <button class="quantity-btn" id="decreaseBtn">-</button>
-            <input type="number" class="quantity-input" value="1" min="1" max="{{ $product->stock }}"
+            <input type="number" class="quantity-input" value="1" min="1" 
+                max="{{ $product->variants->count() > 0 ? ($product->variants[0]->stock ?? $product->stock) : $product->stock }}"
                 id="quantityInput" />
             <button class="quantity-btn" id="increaseBtn">+</button>
-            <span class="stock-info">Stok: {{ $product->stock }}</span>
+            <span class="stock-info" id="stockInfo">Stok: {{ $product->variants->count() > 0 ? ($product->variants[0]->stock ?? $product->stock) : $product->stock }}</span>
         </div>
     </div>
 
@@ -265,6 +270,8 @@
     <script>
         const variantOptions = document.querySelectorAll(".variant-option");
         const productPrice = document.getElementById("productPrice");
+        const quantityInput = document.getElementById("quantityInput");
+        const stockInfo = document.getElementById("stockInfo");
 
         variantOptions.forEach((option) => {
             option.addEventListener("click", function() {
@@ -272,8 +279,23 @@
                 this.classList.add("selected");
 
                 const price = this.getAttribute("data-price");
+                const stock = this.getAttribute("data-stock");
+                
                 if (price) {
                     productPrice.textContent = "Rp " + Number(price).toLocaleString('id-ID');
+                }
+                
+                if (stock) {
+                    // Update stock display
+                    stockInfo.textContent = "Stok: " + stock;
+                    
+                    // Update quantity input max attribute
+                    quantityInput.setAttribute("max", stock);
+                    
+                    // Reset quantity to 1 or max stock if current quantity exceeds new max
+                    if (parseInt(quantityInput.value) > parseInt(stock)) {
+                        quantityInput.value = stock;
+                    }
                 }
             });
         });
