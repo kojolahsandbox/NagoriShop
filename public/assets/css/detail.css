@@ -67,7 +67,7 @@ body {
     position: absolute;
     top: -8px;
     right: -8px;
-    background-color: #ff4b2b;
+    background-color: #980000;
     color: white;
     border-radius: 50%;
     width: 18px;
@@ -124,7 +124,7 @@ body {
     position: absolute;
     top: 15px;
     left: 15px;
-    background-color: #ff4b2b;
+    background-color: #980000;
     color: white;
     padding: 5px 10px;
     border-radius: 15px;
@@ -150,7 +150,7 @@ body {
 }
 
 .favorite-btn.active {
-    color: #ff4b2b;
+    color: #980000;
 }
 
 /* Product Info Section */
@@ -193,7 +193,7 @@ body {
 .current-price {
     font-size: 24px;
     font-weight: bold;
-    color: #ff4b2b;
+    color: #980000;
     margin-bottom: 5px;
 }
 
@@ -210,7 +210,7 @@ body {
 }
 
 .discount-percentage {
-    background-color: #ff4b2b;
+    background-color: #980000;
     color: white;
     padding: 2px 6px;
     border-radius: 4px;
@@ -234,7 +234,7 @@ body {
 }
 
 .tag-live {
-    background-color: #ff4b2b;
+    background-color: #980000;
     color: white;
 }
 
@@ -278,9 +278,9 @@ body {
 }
 
 .variant-option.selected {
-    border-color: #ff4b2b;
+    border-color: #980000;
     background-color: #fff5f5;
-    color: #ff4b2b;
+    color: #980000;
 }
 
 /* Quantity Section */
@@ -349,7 +349,7 @@ body {
 }
 
 .show-more {
-    color: #ff4b2b;
+    color: #980000;
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
@@ -370,7 +370,7 @@ body {
 }
 
 .view-all-reviews {
-    color: #ff4b2b;
+    color: #980000;
     font-size: 14px;
     text-decoration: none;
 }
@@ -428,7 +428,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #ff4b2b;
+    background-color: #980000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -500,7 +500,7 @@ body {
 .related-price {
     font-size: 12px;
     font-weight: bold;
-    color: #ff4b2b;
+    color: #980000;
 }
 
 /* Bottom Action Bar */
@@ -530,12 +530,12 @@ body {
 
 .add-to-cart-btn {
     background-color: #fff;
-    color: #ff4b2b;
-    border: 2px solid #ff4b2b;
+    color: #980000;
+    border: 2px solid #980000;
 }
 
 .buy-now-btn {
-    background-color: #ff4b2b;
+    background-color: #980000;
     color: white;
 }
 

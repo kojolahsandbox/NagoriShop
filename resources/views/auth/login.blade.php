@@ -56,7 +56,7 @@
                         @endif
 
                         @if (session('success'))
-                            <div style="color:#ff4b2b">
+                            <div style="color:#980000">
                                 {{ session('success') }}
                             </div>
                         @endif

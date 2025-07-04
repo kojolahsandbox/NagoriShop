@@ -29,7 +29,7 @@
             <div class="profile-name" id="profileName">John Doe</div>
             <div class="profile-email" id="profileEmail">john.doe@example.com</div>
             @if (session('success'))
-                <div style="color:#ff4b2b;">
+                <div style="color:#980000;">
                     {{ session('success') }}
                 </div>
             @endif
@@ -287,7 +287,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">

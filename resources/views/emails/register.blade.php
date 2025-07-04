@@ -11,7 +11,7 @@
 
     <table align="center" width="100%" cellpadding="0" cellspacing="0"
         style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-        <tr style="background-color: #ff4b2b;">
+        <tr style="background-color: #980000;">
             <td style="padding: 20px; text-align: center; color: #ffffff;">
                 <h1 style="margin: 0; font-size: 24px;">Verifikasi Akun Anda</h1>
             </td>
@@ -28,7 +28,7 @@
 
                 <div style="text-align: center; margin: 30px 0;">
                     <a href="{{ url('/verify/' . $verification_code) }}"
-                        style="background-color: #ff4b2b; color: #ffffff; padding: 12px 24px; text-decoration: none;
+                        style="background-color: #980000; color: #ffffff; padding: 12px 24px; text-decoration: none;
                               font-size: 16px; border-radius: 6px; display: inline-block; font-weight: bold;">
                         Verifikasi Akun
                     </a>
@@ -47,7 +47,7 @@
                     Hormat kami,<br>
                     <strong>Tim Support</strong><br>
                     <a href="{{ config('app.url') }}"
-                        style="color: #ff4b2b; text-decoration: none;">{{ config('app.name') }}</a>
+                        style="color: #980000; text-decoration: none;">{{ config('app.name') }}</a>
                 </p>
             </td>
         </tr>
