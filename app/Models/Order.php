@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
+    use HasFactory;
     public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = [
@@ -43,6 +45,11 @@ class Order extends Model
     }
 
     public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }

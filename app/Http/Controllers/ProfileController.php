@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,13 +13,74 @@ class ProfileController extends Controller
     //
     public function index()
     {
+        $orders = Order::where('user_id', Auth::user()->id)
+            ->with(['orderItems.product']) // Menyertakan relasi orderItems dan product
+            ->get();
+
+        $purchasedItems = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $item) {
+                $idByDate = 'ORD' . $order->created_at->format('ymHis');
+                $purchasedItems[] = [
+                    'id' => $idByDate,
+                    'product' => $item->product_name,
+                    'price' => 'Rp' . number_format($order->total_amount, 0, ',', '.'),
+                    'status' => $this->getStatusText($order->status),
+                    'statusLabel' => $this->getStatusLabel($order->status),
+                    'date' => $order->created_at->format('d M Y'),
+                    'image' => $item->product ? asset('storage/products/' . $item->product->image) : 'https://www.claudeusercontent.com/api/placeholder/50/50',
+                ];
+            }
+        }
+
         $data = [
-            'title' => 'Profile',
+            'title' => 'Profil',
+            'purchasedItems' => $purchasedItems,
         ];
 
         return view('customer.profile', $data);
     }
 
+    private function getStatusText($status)
+    {
+        switch ($status) {
+            case 'draft':
+                return 'Menunggu';
+            case 'waiting_payment':
+                return 'Menunggu Pembayaran';
+            case 'paid':
+                return 'Dikemas';
+            case 'shipped':
+                return 'Diperjalanan';
+            case 'completed':
+                return 'Terkirim';
+            case 'cancelled':
+                return 'Dibatalkan';
+            default:
+                return 'Status Tidak Diketahui';
+        }
+    }
+
+    private function getStatusLabel($status)
+    {
+        switch ($status) {
+            case 'draft':
+                return 'pending';
+            case 'waiting_payment':
+                return 'pending';
+            case 'paid':
+                return 'shipped';
+            case 'shipped':
+                return 'shipped';
+            case 'completed':
+                return 'delivered';
+            case 'cancelled':
+                return 'Dibatalkan';
+            default:
+                return 'Status Tidak Diketahui';
+        }
+    }
     public function update(Request $request)
     {
         $request->validate([

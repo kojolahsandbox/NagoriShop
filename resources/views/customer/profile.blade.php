@@ -346,43 +346,7 @@
 
     <script>
         // Sample orders data
-        const ordersData = [{
-                id: "NG001234",
-                product: "Ikan Kering Premium",
-                price: "Rp87.040",
-                status: "delivered",
-                statusText: "Terkirim",
-                date: "15 Jun 2025",
-                image: "https://www.claudeusercontent.com/api/placeholder/50/50",
-            },
-            {
-                id: "NG001235",
-                product: "Lado Merah Giliang",
-                price: "Rp36.224",
-                status: "shipped",
-                statusText: "Dikirim",
-                date: "20 Jun 2025",
-                image: "https://www.claudeusercontent.com/api/placeholder/50/50",
-            },
-            {
-                id: "NG001236",
-                product: "Ikan Nila Segar",
-                price: "Rp14.400",
-                status: "processing",
-                statusText: "Diproses",
-                date: "21 Jun 2025",
-                image: "https://www.claudeusercontent.com/api/placeholder/50/50",
-            },
-            {
-                id: "NG001237",
-                product: "Sapi Kurban A5",
-                price: "Rp1.336.224",
-                status: "pending",
-                statusText: "Menunggu",
-                date: "21 Jun 2025",
-                image: "https://www.claudeusercontent.com/api/placeholder/50/50",
-            },
-        ];
+        const ordersData = @json($purchasedItems);
 
         // Sample notifications data
         const notificationsData = [{
@@ -446,7 +410,7 @@
 
             if (filter !== "all") {
                 filteredOrders = ordersData.filter(
-                    (order) => order.status === filter
+                    (order) => order.statusLabel === filter
                 );
             }
 
@@ -467,7 +431,7 @@
                     <div class="order-item">
                         <div class="order-header">
                             <span class="order-id">#${order.id}</span>
-                            <span class="order-status status-${order.status}">${order.statusText}</span>
+                            <span class="order-status status-${order.statusLabel}">${order.status}</span>
                         </div>
                         <div class="order-details">
                             <img src="${order.image}" alt="${order.product}" class="order-image">
