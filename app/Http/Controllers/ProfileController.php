@@ -24,6 +24,7 @@ class ProfileController extends Controller
                 $idByDate = 'ORD' . $order->created_at->format('ymHis');
                 $purchasedItems[] = [
                     'id' => $idByDate,
+                    'order_id' => $order->id,
                     'product' => $item->product_name,
                     'price' => 'Rp' . number_format($order->total_amount, 0, ',', '.'),
                     'status' => $this->getStatusText($order->status),
@@ -46,7 +47,7 @@ class ProfileController extends Controller
     {
         switch ($status) {
             case 'draft':
-                return 'Menunggu';
+                return 'Menunggu Konfirmasi';
             case 'waiting_payment':
                 return 'Menunggu Pembayaran';
             case 'paid':

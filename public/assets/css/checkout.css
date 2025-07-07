@@ -1,0 +1,368 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+}
+
+/* Container to maintain mobile width on desktop */
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding-bottom: 70px;
+}
+
+.header {
+    background-color: #980000;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.back-button {
+    margin-right: 15px;
+    font-size: 18px;
+    color: white;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Checkout sections */
+.section {
+    background-color: white;
+    margin: 10px 0;
+    padding: 15px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-link {
+    color: #980000;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+/* Address section */
+.address-details {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.address-icon {
+    color: #980000;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.address-info {
+    flex: 1;
+}
+
+.address-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.address-phone {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.address-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.default-tag {
+    display: inline-block;
+    background-color: #fff6e0;
+    color: #ffa500;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* Shipping section */
+.shipping-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.shipping-option:last-child {
+    border-bottom: none;
+}
+
+.shipping-details {
+    flex: 1;
+}
+
+.shipping-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.shipping-info {
+    color: #666;
+    font-size: 14px;
+}
+
+.shipping-price {
+    font-weight: bold;
+    color: #980000;
+}
+
+/* Products section */
+.product-list {
+    margin-top: 10px;
+}
+
+.product-item {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.product-variant {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.product-price-qty {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    color: #980000;
+    font-weight: bold;
+}
+
+.product-qty {
+    color: #666;
+}
+
+/* Payment section */
+.payment-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.payment-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: #980000;
+}
+
+.payment-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.payment-arrow {
+    color: #999;
+}
+
+/* Summary section */
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.summary-label {
+    color: #666;
+}
+
+.summary-value {
+    font-weight: 500;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.total-label {
+    font-weight: bold;
+}
+
+.total-value {
+    color: #980000;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Promo code section */
+.promo-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.promo-field {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
+    outline: none;
+}
+
+.promo-button {
+    background-color: #980000;
+    color: white;
+    border: none;
+    padding: 11px 15px;
+    border-radius: 0 5px 5px 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Checkout button */
+.checkout-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkout-total {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.checkout-price {
+    color: #980000;
+}
+
+.checkout-button {
+    background-color: #980000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Radio buttons */
+.radio-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.radio-custom {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    margin-right: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-selected {
+    border-color: #980000;
+}
+
+.radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #980000;
+    opacity: 0;
+}
+
+.radio-selected .radio-dot {
+    opacity: 1;
+}
+
+/* Notes section */
+.notes-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+}

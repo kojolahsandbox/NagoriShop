@@ -14,6 +14,9 @@ use App\Models\Village;
 use App\Mail\ConfirmationMail;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Qris;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -122,5 +125,135 @@ class CheckoutController extends Controller
             return redirect()->route('profile')->with('success', 'Pesanan anda berhasil dibuat!');
         }
 
+    }
+
+    public function checkout($id)
+    {
+        $order = Order::find($id);
+        $qris = Qris::where('order_id', $id)->first();
+
+        if (!$order) {
+            return view('404');
+        } else {
+            $orderItems = $order->orderItems;
+
+            $data = [
+                'title' => 'Checkout',
+                'order' => $order,
+                'orderItems' => $orderItems,
+                'qris' => $qris,
+                'address' => Address::find($order->address_id),
+            ];
+
+            return view('customer.checkout', $data);
+        }
+    }
+
+    public function generateQris($id)
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return view('404');
+        } else {
+
+            // Parameter untuk request
+            $nota = 'ORD' . $order->created_at->format('ymHis');
+
+            $params = [
+                'do' => 'create-invoice',
+                'apikey' => env('QRIS_API_KEY'), // API Key dari .env
+                'mID' => env('QRIS_MID'), // Merchant ID dari .env
+                'cliTrxNumber' => $nota, // Nomor transaksi unik
+                'cliTrxAmount' => intval($order->total_amount), // Jumlah transaksi + kode unik
+                'useTip' => 'no',
+            ];
+
+            // API QRIS 
+            $url = "https://qris.interactive.co.id/restapi/qris/show_qris.php";
+
+            $response = Http::get($url, $params);
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+
+                if (isset($responseData['data']) && is_array($responseData['data'])) {
+
+                    $data = $responseData['data'];
+
+                    $qris = Qris::create([
+                        'order_id' => $id,
+                        'qris_content' => $data['qris_content'],
+                        'qris_request_date' => $data['qris_request_date'],
+                        'qris_invoiceid' => $data['qris_invoiceid'],
+                        'qris_invoiceamount' => intval($order->total_amount),
+                        'qris_invoicestatus' => 'unpaid',
+                    ]);
+
+                    $order->update([
+                        'status' => 'waiting_payment',
+                    ]);
+                    $order->save();
+
+                    return redirect()->route('checkout', $id);
+                }
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi kesalahan saat mengambil data QRIS dari API',
+                ], 500);
+            }
+
+        }
+    }
+
+    public function checkPayment($id)
+    {
+        $qris = Qris::find($id);
+
+        if (!$qris) {
+            return view('404');
+        } else {
+            $params = [
+                'do' => 'checkStatus',
+                'apikey' => env('QRIS_API_KEY'),
+                'mID' => env('QRIS_MID'),
+                'invid' => $qris->qris_invoiceid,
+                'trxvalue' => $qris->qris_invoiceamount,
+                'trxdate' => date('Y-m-d', \Carbon\Carbon::parse($qris->qris_request_date)->timestamp),
+            ];
+
+            $url = "https://qris.interactive.co.id/restapi/qris/checkpaid_qris.php";
+
+            $response = Http::get($url, $params);
+            if ($response->successful()) {
+                $responseData = $response->json();
+
+                if ($responseData['status'] == 'failed') {
+                    return redirect()->route('checkout', $qris->order_id)->with('alert', 'Pembayaran Gagal/Belum Dilakukan! Silahkan Coba Lagi');
+                }
+
+                if (isset($responseData['data']) && is_array($responseData['data'])) {
+                    $data = $responseData['data'];
+                    $qris->update([
+                        'qris_invoicestatus' => $data['qris_status'],
+                    ]);
+                    $qris->save();
+
+                    if ($data['qris_status'] == 'paid') {
+                        $order = Order::find($qris->order_id);
+                        $order->update([
+                            'status' => 'paid',
+                        ]);
+                        $order->save();
+                    }
+                    return redirect()->route('profile')->with('success', 'Pembayaran berhasil! Barang Akan Segera Dikirim');
+                }
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi kesalahan saat mengambil data QRIS dari API',
+                ], 500);
+            }
+        }
     }
 }

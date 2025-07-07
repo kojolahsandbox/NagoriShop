@@ -47,6 +47,20 @@
             @endif
         </div>
 
+        <!-- Order & Activity -->
+        <div class="section-title">Pesanan & Aktivitas</div>
+        <div class="menu-section">
+            <a href="#" class="menu-item" onclick="openOrdersModal()">
+                <div class="menu-icon">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div class="menu-text">Pesanan Saya</div>
+                <div class="menu-arrow">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+
         <!-- Account Settings -->
         <div class="section-title">Pengaturan Akun</div>
         <div class="menu-section">
@@ -73,20 +87,6 @@
                     <i class="fa-solid fa-bell"></i>
                 </div>
                 <div class="menu-text">Notifikasi</div>
-                <div class="menu-arrow">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
-            </a>
-        </div>
-
-        <!-- Order & Activity -->
-        <div class="section-title">Pesanan & Aktivitas</div>
-        <div class="menu-section">
-            <a href="#" class="menu-item" onclick="openOrdersModal()">
-                <div class="menu-icon">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-                <div class="menu-text">Pesanan Saya</div>
                 <div class="menu-arrow">
                     <i class="fa-solid fa-chevron-right"></i>
                 </div>
@@ -429,6 +429,7 @@
                 .map(
                     (order) => `
                     <div class="order-item">
+                        <a style="text-decoration:none;" href="/checkout/${order.order_id}">
                         <div class="order-header">
                             <span class="order-id">#${order.id}</span>
                             <span class="order-status status-${order.statusLabel}">${order.status}</span>
@@ -441,6 +442,7 @@
                             </div>
                         </div>
                         <div class="order-date">${order.date}</div>
+                        </a>
                     </div>
                 `
                 )
