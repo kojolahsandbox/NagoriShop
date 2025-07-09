@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ $title }} - Nagori Shop</title>
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -317,6 +319,29 @@
             }
         }
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Login Form Loading
+            const loginForm = document.getElementById("login-form");
+            const loginButton = loginForm.querySelector("button[type='submit']");
+
+            loginForm.addEventListener("submit", function() {
+                loginButton.disabled = true;
+                loginButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Masuk...';
+            });
+
+            // Register Form Loading
+            const registerForm = document.getElementById("register-form-email");
+            const registerButton = registerForm.querySelector("button[type='submit']");
+
+            registerForm.addEventListener("submit", function() {
+                registerButton.disabled = true;
+                registerButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Daftar...';
+            });
+        });
+    </script>
+
 </body>
 
 </html>

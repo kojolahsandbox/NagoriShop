@@ -39,6 +39,15 @@
                     </div>
                 </div>
             </div>
+            @if ($order->shipping_status == 'confirmed' && $order->status == 'waiting_payment')
+                <div class="address-details" style="justify-content: center;">
+                    <div class="address-name">
+                        <a style="text-decoration: none; color:inherit;"
+                            href="{{ route('cancel.order', ['id' => $order->id]) }}" class="">Batalkan
+                            Pesanan</a>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Products Section -->
@@ -134,7 +143,7 @@
                 </div>
                 <div class="payment-method">
                     <a style="text-decoration: none;" href="{{ route('check.payment', ['id' => $qris->id]) }}"
-                        class="checkout-button">Cek Status
+                        class="checkout-button" id="btn-cek-status">Cek Status
                         Bayar</a>
                 </div>
             @endif
@@ -208,7 +217,7 @@
         </div>
         @if ($order->shipping_status == 'confirmed' && $order->status == 'draft')
             <a style="text-decoration: none;" href="{{ route('generate.qris', ['id' => $order->id]) }}"
-                class="checkout-button">Bayar Sekarang</a>
+                class="checkout-button" id="btn-bayar">Bayar Sekarang</a>
         @endif
     </div>
     </div>
@@ -234,6 +243,37 @@
             });
         });
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Handler untuk "Bayar Sekarang"
+            const bayarBtn = document.getElementById("btn-bayar");
+            if (bayarBtn) {
+                bayarBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    bayarBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
+                    bayarBtn.classList.add('disabled');
+                    setTimeout(() => {
+                        window.location.href = bayarBtn.href;
+                    }, 500); // jeda untuk tampilkan animasi
+                });
+            }
+
+            // Handler untuk "Cek Status Bayar"
+            const cekBtn = document.getElementById("btn-cek-status");
+            if (cekBtn) {
+                cekBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    cekBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Mengecek...';
+                    cekBtn.classList.add('disabled');
+                    setTimeout(() => {
+                        window.location.href = cekBtn.href;
+                    }, 500);
+                });
+            }
+        });
+    </script>
+
 </body>
 
 </html>

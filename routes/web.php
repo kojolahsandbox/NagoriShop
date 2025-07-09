@@ -58,6 +58,8 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/generate-qris/{id}', [CheckoutController::class, 'generateQris'])->name('generate.qris');
     Route::get('/check-payment/{id}', [CheckoutController::class, 'checkPayment'])->name('check.payment');
 
+    Route::get('/cancel-order/{id}', [CheckoutController::class, 'cancelOrder'])->name('cancel.order');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile_update');
 

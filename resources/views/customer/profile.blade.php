@@ -96,7 +96,8 @@
         <!-- Help & Support -->
         <div class="section-title">Bantuan & Dukungan</div>
         <div class="menu-section">
-            <a href="#" class="menu-item">
+            <a href="https://wa.me/62811662373?text=Saya+Butuh+Bantuan+Aplikasi+".{{ env('APP_URL') }}
+                class="menu-item">
                 <div class="menu-icon">
                     <i class="fa-solid fa-headset"></i>
                 </div>

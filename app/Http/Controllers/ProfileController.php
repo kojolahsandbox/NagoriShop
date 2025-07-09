@@ -15,6 +15,7 @@ class ProfileController extends Controller
     {
         $orders = Order::where('user_id', Auth::user()->id)
             ->with(['orderItems.product']) // Menyertakan relasi orderItems dan product
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $purchasedItems = [];

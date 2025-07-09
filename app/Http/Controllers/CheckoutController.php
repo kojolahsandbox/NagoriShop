@@ -18,6 +18,7 @@ use App\Models\Qris;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 
 class CheckoutController extends Controller
@@ -25,12 +26,37 @@ class CheckoutController extends Controller
     //
     public function confirmation(Request $request)
     {
+        $validatedData = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'variant_id' => 'nullable|exists:product_variants,id',
+        ]);
+
         $productId = $request->product_id;
         $quantity = $request->quantity;
         $variantId = $request->variant_id;
 
         $product = Product::find($productId);
         $variant = ProductVariant::find($variantId);
+
+        if ($variant) {
+            $variantStock = $variant->stock;
+            if ($variantStock < $quantity) {
+                return redirect()->route('profile')->with('alert', 'Stok Varian Produk yang dipilih Kurang!');
+            }
+        } else {
+            $productStock = $product->stock;
+            if ($productStock < $quantity) {
+                return redirect()->route('profile')->with('alert', 'Stok Produk yang dipilih Kurang!');
+            }
+        }
+
+        $order = Order::where('user_id', auth()->user()->id)
+            ->where('status', 'waiting_payment')
+            ->first();
+        if ($order) {
+            return redirect()->route('profile')->with('alert', 'Anda masih memiliki pesanan yang belum dibayar!');
+        }
 
         if (!$product) {
             return view('404');
@@ -254,6 +280,20 @@ class CheckoutController extends Controller
                     'message' => 'Terjadi kesalahan saat mengambil data QRIS dari API',
                 ], 500);
             }
+        }
+    }
+
+    public function cancelOrder($id)
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return view('404');
+        } else {
+            $order->update([
+                'status' => 'cancelled'
+            ]);
+            $order->save();
+            return redirect()->route('profile')->with('alert', 'Pembelian Berhasil dibatalkan!');
         }
     }
 }

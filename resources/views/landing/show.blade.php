@@ -210,7 +210,7 @@
             <input type="hidden" name="product_id" value="{{ $product->id }}">
             <input type="hidden" name="quantity" id="quantity" value="1">
             <input type="hidden" name="variant_id" id="variant_id" value="">
-            <button type="submit" class="action-btn buy-now-btn">Beli Sekarang</button>
+            <button type="submit" class="action-btn buy-now-btn" id="buyNowButton">Beli Sekarang</button>
         </form>
     </div>
 
@@ -357,7 +357,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const variantOptions = document.querySelectorAll(".variant-option");
-            const buyNowBtn = document.querySelector(".buy-now-btn");
+            const buyNowForm = document.getElementById("buyNowForm");
+            const buyNowBtn = document.getElementById("buyNowButton");
             const quantityInput = document.getElementById("quantityInput");
             const quantityField = document.getElementById("quantity");
             const variantField = document.getElementById("variant_id");
@@ -367,28 +368,27 @@
             // Pilih varian dan update selected
             variantOptions.forEach((option) => {
                 option.addEventListener("click", function() {
-                    // Hapus kelas 'selected' dari semua varian
                     variantOptions.forEach((opt) => opt.classList.remove("selected"));
-                    // Tandai varian ini sebagai yang dipilih
                     this.classList.add("selected");
-
-                    // Simpan varian yang dipilih
                     selectedVariant = this;
-
-                    // Update nilai input variant_id dengan data-id varian yang dipilih
                     variantField.value = this.getAttribute("data-id");
                 });
             });
 
-            // Tombol Beli Sekarang
-            buyNowBtn.addEventListener("click", function(event) {
-                // Jika varian telah dipilih, update variant_id di form
+            // Tangani form submit, bukan tombol klik
+            buyNowForm.addEventListener("submit", function(event) {
+                // Update hidden fields sebelum form benar-benar dikirim
                 if (selectedVariant) {
                     variantField.value = selectedVariant.getAttribute("data-id");
                 }
 
-                // Update nilai kuantitas di form sebelum mengirim
                 quantityField.value = quantityInput.value;
+
+                // Ubah tampilan tombol
+                buyNowBtn.disabled = true;
+                buyNowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+
+                // Jangan gunakan event.preventDefault(), biarkan form lanjut submit
             });
         });
     </script>
