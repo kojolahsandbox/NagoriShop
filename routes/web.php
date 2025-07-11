@@ -55,6 +55,10 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/confirmation', [CheckoutController::class, 'confirmation'])->name('confirmation');
     Route::get('/checkout/{id}', [CheckoutController::class, 'checkout'])->name('checkout');
 
+    Route::get('/cart', [CheckoutController::class, 'cart'])->name('cart');
+    Route::get('/cart/delete/{id}', [CheckoutController::class, 'cartDelete'])->name('cart.delete');
+    Route::post('/addToCart', [CheckoutController::class, 'addToCart'])->name('addToCart');
+
     Route::get('/generate-qris/{id}', [CheckoutController::class, 'generateQris'])->name('generate.qris');
     Route::get('/check-payment/{id}', [CheckoutController::class, 'checkPayment'])->name('check.payment');
 

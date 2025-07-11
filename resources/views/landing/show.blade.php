@@ -202,56 +202,151 @@
 
     <!-- Action Bar -->
     <div class="action-bar">
-        <button class="action-btn add-to-cart-btn">
-            <i class="fa-solid fa-cart-plus"></i> Keranjang
-        </button>
-        <form id="buyNowForm" action="{{ route('confirmation') }}" method="POST">
+        <!-- Form Add to Cart -->
+        <form id="addToCartForm" action="{{ route('addToCart') }}" method="POST" style="width: 50%;">
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <input type="hidden" name="quantity" id="quantity" value="1">
-            <input type="hidden" name="variant_id" id="variant_id" value="">
-            <button type="submit" class="action-btn buy-now-btn" id="buyNowButton">Beli Sekarang</button>
+            <input type="hidden" name="quantity" id="addToCartQuantity" value="1">
+            <input type="hidden" name="variant_id" id="addToCartVariant" value="">
+            <button style="width: 100%;" class="action-btn add-to-cart-btn" id="addToCartButton" type="submit">
+                <i class="fa-solid fa-cart-plus"></i> Keranjang
+            </button>
+        </form>
+
+        <!-- Form Buy Now -->
+        <form id="buyNowForm" action="{{ route('confirmation') }}" method="POST" style="width: 50%;">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" id="buyNowQuantity" value="1">
+            <input type="hidden" name="variant_id" id="buyNowVariant" value="">
+            <button style="width: 100%;" type="submit" class="action-btn buy-now-btn" id="buyNowButton">Beli
+                Sekarang</button>
         </form>
     </div>
+
 
 
 @endsection
 
 @section('script')
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Favorite button functionality
+            // ======================= Favorit Button =======================
             const favoriteBtn = document.getElementById("favoriteBtn");
-            favoriteBtn.addEventListener("click", function() {
+            favoriteBtn?.addEventListener("click", function() {
                 const icon = this.querySelector("i");
-                if (icon.classList.contains("fa-regular")) {
-                    icon.classList.remove("fa-regular");
-                    icon.classList.add("fa-solid");
-                    this.classList.add("active");
-                } else {
-                    icon.classList.remove("fa-solid");
-                    icon.classList.add("fa-regular");
-                    this.classList.remove("active");
-                }
+                icon.classList.toggle("fa-regular");
+                icon.classList.toggle("fa-solid");
+                this.classList.toggle("active");
             });
 
-            // Variant selection
+            // ======================= Variabel =======================
             const variantOptions = document.querySelectorAll(".variant-option");
-            variantOptions.forEach((option) => {
+            const productPrice = document.getElementById("productPrice");
+            const quantityInput = document.getElementById("quantityInput");
+            const stockInfo = document.getElementById("stockInfo");
+
+            const addToCartForm = document.getElementById("addToCartForm");
+            const buyNowForm = document.getElementById("buyNowForm");
+
+            const addToCartVariant = document.getElementById("addToCartVariant");
+            const buyNowVariant = document.getElementById("buyNowVariant");
+
+            const addToCartQuantity = document.getElementById("addToCartQuantity");
+            const buyNowQuantity = document.getElementById("buyNowQuantity");
+
+            const addToCartBtn = document.getElementById("addToCartButton");
+            const buyNowBtn = document.getElementById("buyNowButton");
+
+            // ======================= Inisialisasi Varian Awal =======================
+            let selectedVariant = document.querySelector(".variant-option.selected");
+            if (selectedVariant) {
+                const initialId = selectedVariant.getAttribute("data-id");
+                addToCartVariant.value = initialId;
+                buyNowVariant.value = initialId;
+            }
+
+            // ======================= Pilih Varian =======================
+            variantOptions.forEach(option => {
                 option.addEventListener("click", function() {
-                    variantOptions.forEach((opt) => opt.classList.remove("selected"));
+                    variantOptions.forEach(opt => opt.classList.remove("selected"));
                     this.classList.add("selected");
+                    selectedVariant = this;
+
+                    const variantId = this.dataset.id;
+                    const price = this.dataset.price;
+                    const stock = this.dataset.stock;
+
+                    // Update harga
+                    if (price) {
+                        productPrice.textContent = "Rp " + Number(price).toLocaleString("id-ID");
+                    }
+
+                    // Update stok
+                    if (stock) {
+                        stockInfo.textContent = "Stok: " + stock;
+                        quantityInput.setAttribute("max", stock);
+
+                        if (parseInt(quantityInput.value) > parseInt(stock)) {
+                            quantityInput.value = stock;
+                        }
+                    }
+
+                    // Update hidden input variant_id
+                    addToCartVariant.value = variantId;
+                    buyNowVariant.value = variantId;
                 });
             });
 
+            // ======================= Jumlah Produk =======================
+            const decreaseBtn = document.getElementById("decreaseBtn");
+            const increaseBtn = document.getElementById("increaseBtn");
 
+            const getMin = () => parseInt(quantityInput.getAttribute("min")) || 1;
+            const getMax = () => parseInt(quantityInput.getAttribute("max")) || 1;
 
-            // Description show more/less
+            decreaseBtn.addEventListener("click", () => {
+                let value = parseInt(quantityInput.value);
+                if (value > getMin()) quantityInput.value = value - 1;
+            });
+
+            increaseBtn.addEventListener("click", () => {
+                let value = parseInt(quantityInput.value);
+                if (value < getMax()) quantityInput.value = value + 1;
+            });
+
+            quantityInput.addEventListener("input", () => {
+                let value = parseInt(quantityInput.value);
+                let max = getMax();
+                let min = getMin();
+
+                if (isNaN(value) || value < min) {
+                    quantityInput.value = min;
+                } else if (value > max) {
+                    quantityInput.value = max;
+                }
+            });
+
+            // ======================= Submit Forms =======================
+            addToCartForm.addEventListener("submit", function(e) {
+                addToCartQuantity.value = quantityInput.value;
+                addToCartVariant.value = selectedVariant?.getAttribute("data-id") || "";
+                addToCartBtn.disabled = true;
+                addToCartBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+            });
+
+            buyNowForm.addEventListener("submit", function(e) {
+                buyNowQuantity.value = quantityInput.value;
+                buyNowVariant.value = selectedVariant?.getAttribute("data-id") || "";
+                buyNowBtn.disabled = true;
+                buyNowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+            });
+
+            // ======================= Deskripsi Toggle =======================
             const showMoreBtn = document.getElementById("showMoreBtn");
             const fullDescription = document.getElementById("fullDescription");
 
-            showMoreBtn.addEventListener("click", function() {
+            showMoreBtn?.addEventListener("click", function() {
                 if (fullDescription.classList.contains("hidden")) {
                     fullDescription.classList.remove("hidden");
                     this.textContent = "Lebih Sedikit";
@@ -261,135 +356,17 @@
                 }
             });
 
-            // Image indicator simulation (you can add image slider functionality here)
+            // ======================= Image Indicator Dummy (Simulasi) =======================
             const indicators = document.querySelectorAll(".indicator");
             let currentImageIndex = 0;
 
-            // Simulate image change every 5 seconds
             setInterval(() => {
-                indicators[currentImageIndex].classList.remove("active");
-                currentImageIndex = (currentImageIndex + 1) % indicators.length;
-                indicators[currentImageIndex].classList.add("active");
+                if (indicators.length) {
+                    indicators[currentImageIndex].classList.remove("active");
+                    currentImageIndex = (currentImageIndex + 1) % indicators.length;
+                    indicators[currentImageIndex].classList.add("active");
+                }
             }, 5000);
-        });
-    </script>
-
-    <script>
-        const variantOptions = document.querySelectorAll(".variant-option");
-        const productPrice = document.getElementById("productPrice");
-        const quantityInput = document.getElementById("quantityInput");
-        const stockInfo = document.getElementById("stockInfo");
-
-        variantOptions.forEach((option) => {
-            option.addEventListener("click", function() {
-                variantOptions.forEach((opt) => opt.classList.remove("selected"));
-                this.classList.add("selected");
-
-                const price = this.getAttribute("data-price");
-                const stock = this.getAttribute("data-stock");
-
-                if (price) {
-                    productPrice.textContent = "Rp " + Number(price).toLocaleString('id-ID');
-                }
-
-                if (stock) {
-                    // Update stock display
-                    stockInfo.textContent = "Stok: " + stock;
-
-                    // Update quantity input max attribute
-                    quantityInput.setAttribute("max", stock);
-
-                    // Reset quantity to 1 or max stock if current quantity exceeds new max
-                    if (parseInt(quantityInput.value) > parseInt(stock)) {
-                        quantityInput.value = stock;
-                    }
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const quantityInput = document.getElementById("quantityInput");
-            const decreaseBtn = document.getElementById("decreaseBtn");
-            const increaseBtn = document.getElementById("increaseBtn");
-
-            // Ambil nilai min dan max dari atribut input
-            const getMin = () => parseInt(quantityInput.getAttribute("min")) || 1;
-            const getMax = () => parseInt(quantityInput.getAttribute("max")) || 1;
-
-            // Tombol minus
-            decreaseBtn.addEventListener("click", function() {
-                let currentValue = parseInt(quantityInput.value);
-                if (currentValue > getMin()) {
-                    quantityInput.value = currentValue - 1;
-                }
-            });
-
-            // Tombol plus
-            increaseBtn.addEventListener("click", function() {
-
-                let currentValue = parseInt(quantityInput.value);
-                let max = getMax();
-
-                if (currentValue < max) {
-                    quantityInput.value = currentValue + 1;
-                } else {
-                    quantityInput.value = max; // opsional: paksa ke max jika melebihi
-                }
-            });
-
-            // Validasi saat input manual
-            quantityInput.addEventListener("input", function() {
-                let value = parseInt(this.value);
-                let max = getMax();
-                let min = getMin();
-
-                if (isNaN(value) || value < min) {
-                    this.value = min;
-                } else if (value > max) {
-                    this.value = max;
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const variantOptions = document.querySelectorAll(".variant-option");
-            const buyNowForm = document.getElementById("buyNowForm");
-            const buyNowBtn = document.getElementById("buyNowButton");
-            const quantityInput = document.getElementById("quantityInput");
-            const quantityField = document.getElementById("quantity");
-            const variantField = document.getElementById("variant_id");
-
-            let selectedVariant = document.querySelector(".variant-option.selected");
-
-            // Pilih varian dan update selected
-            variantOptions.forEach((option) => {
-                option.addEventListener("click", function() {
-                    variantOptions.forEach((opt) => opt.classList.remove("selected"));
-                    this.classList.add("selected");
-                    selectedVariant = this;
-                    variantField.value = this.getAttribute("data-id");
-                });
-            });
-
-            // Tangani form submit, bukan tombol klik
-            buyNowForm.addEventListener("submit", function(event) {
-                // Update hidden fields sebelum form benar-benar dikirim
-                if (selectedVariant) {
-                    variantField.value = selectedVariant.getAttribute("data-id");
-                }
-
-                quantityField.value = quantityInput.value;
-
-                // Ubah tampilan tombol
-                buyNowBtn.disabled = true;
-                buyNowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-
-                // Jangan gunakan event.preventDefault(), biarkan form lanjut submit
-            });
         });
     </script>
 @endsection

@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\ProductVariant;
 use App\Models\Province;
 use App\Models\Regency;
+use App\Models\User;
 use App\Models\Village;
 use App\Mail\ConfirmationMail;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+
 
 
 class CheckoutController extends Controller
@@ -31,6 +33,14 @@ class CheckoutController extends Controller
             'quantity' => 'required|integer|min:1',
             'variant_id' => 'nullable|exists:product_variants,id',
         ]);
+
+        if (!$validatedData) {
+            return redirect()->route('profile')->with('alert', 'Terjadi kesalahan saat pembelian langsung');
+        }
+
+        if (!auth()->user()->province || !auth()->user()->city || !auth()->user()->district || !auth()->user()->village) {
+            return redirect()->route('profile')->with('alert', 'Silahkan isi alamat Profil anda terlebih dahulu');
+        }
 
         $productId = $request->product_id;
         $quantity = $request->quantity;
@@ -62,21 +72,21 @@ class CheckoutController extends Controller
             return view('404');
         } else {
             if ($variant) {
-                Cart::create([
-                    'user_id' => auth()->user()->id,
-                    'product_id' => $productId,
-                    'quantity' => $quantity,
-                    'variant' => $variantId,
-                ]);
+                // Cart::create([
+                //     'user_id' => auth()->user()->id,
+                //     'product_id' => $productId,
+                //     'quantity' => $quantity,
+                //     'variant_id' => $variantId,
+                // ]);
                 $unit_price = $variant->price;
                 $total_amount = $variant->price * $quantity;
             } else {
-                Cart::create([
-                    'user_id' => auth()->user()->id,
-                    'product_id' => $productId,
-                    'quantity' => $quantity,
-                    'variant' => null,
-                ]);
+                // Cart::create([
+                //     'user_id' => auth()->user()->id,
+                //     'product_id' => $productId,
+                //     'quantity' => $quantity,
+                //     'variant_id' => null,
+                // ]);
                 $unit_price = $product->price;
                 $total_amount = $product->price * $quantity;
             }
@@ -295,5 +305,130 @@ class CheckoutController extends Controller
             $order->save();
             return redirect()->route('profile')->with('alert', 'Pembelian Berhasil dibatalkan!');
         }
+    }
+
+    public function cart()
+    {
+        $cartItems = Cart::where('user_id', auth()->id())
+            ->with(['product.seller', 'variant']) // eager load relasi
+            ->get()
+            ->map(function ($item) {
+                $product = $item->product;
+                $variant = $item->variant;
+
+                return [
+                    'id' => $item->id,
+                    'shopName' => $product->seller->name ?? 'Nagori Shop',
+                    'title' => $product->name ?? 'Nama Produk',
+                    'variant' => $variant->variant ?? 'Tidak Ada Varian', // 'variant' adalah nama di tabel product_variants
+                    'price' => $product->price,
+                    'originalPrice' => ($variant && $variant->price)
+                        ? $variant->price * $item->quantity
+                        : $product->price * $item->quantity,
+                    'discount' => 0,
+                    'quantity' => $item->quantity,
+                    'image' => asset('storage/products/' . $product->image) ?? 'https://www.claudeusercontent.com/api/placeholder/80/80',
+                    'selected' => false,
+                    'tags' => []
+                ];
+            });
+
+        $data = [
+            'cartItems' => $cartItems,
+            'title' => 'Keranjang Belanja'
+        ];
+
+        return view('customer.cart', $data);
+    }
+
+    public function addToCart(Request $request)
+    {
+        $validatedData = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'variant_id' => 'nullable|exists:product_variants,id',
+        ]);
+
+        if (!$validatedData) {
+            return redirect()->route('profile')->with('alert', 'Terjadi kesalahan saat menambahkan produk ke keranjang.');
+        }
+
+        $user = User::find(auth()->user()->id);
+        if (!$user->province || !$user->city || !$user->district || !$user->village) {
+            return redirect()->route('profile')->with('alert', 'Silahkan isi alamat Profil anda terlebih dahulu');
+        }
+
+        $userId = auth()->id();
+        $productId = $request->product_id;
+        $quantity = $request->quantity;
+        $variantId = $request->variant_id;
+
+        $product = Product::find($productId);
+        $variant = ProductVariant::find($variantId);
+
+        if (!$product) {
+            return view('404');
+        }
+
+        if ($variant) {
+            $variantStock = $variant->stock;
+            if ($variantStock < $quantity) {
+                return redirect()->route('profile')->with('alert', 'Stok Varian Produk yang dipilih Kurang!');
+            }
+        } else {
+            $productStock = $product->stock;
+            if ($productStock < $quantity) {
+                return redirect()->route('profile')->with('alert', 'Stok Produk yang dipilih Kurang!');
+            }
+        }
+
+        $order = Order::where('user_id', auth()->user()->id)
+            ->where('status', 'waiting_payment')
+            ->first();
+        if ($order) {
+            return redirect()->route('profile')->with('alert', 'Anda masih memiliki pesanan yang belum dibayar!');
+        }
+        // dd(Cart::where('user_id', $userId)
+        //     ->where('product_id', $productId)
+        //     ->where('variant_id', $variantId)
+        //     ->toSql());
+        // Cek apakah produk sudah ada di cart user
+        $existingCartItem = Cart::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->where(function ($query) use ($variantId) {
+                if ($variantId) {
+                    $query->where('variant_id', $variantId);
+                } else {
+                    $query->whereNull('variant_id');
+                }
+            })
+            ->first();
+
+        if ($existingCartItem) {
+            $existingCartItem->quantity += $quantity;
+            $existingCartItem->save();
+        } else {
+            Cart::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'variant_id' => $variantId, // <-- pakai variant_id
+                'quantity' => $quantity,
+            ]);
+        }
+
+        return redirect()->route('home')->with('success', 'Pesanan berhasil masuk keranjang!');
+
+    }
+
+    public function cartDelete($id)
+    {
+        $cart = Cart::find($id);
+        if (!$cart) {
+            return redirect()->route('cart')->with('alert', 'Pesanan tidak ditemukan');
+        }
+
+        $cart->delete();
+
+        return redirect()->route('cart')->with('success', 'Pesanan berhasil dihapus');
     }
 }

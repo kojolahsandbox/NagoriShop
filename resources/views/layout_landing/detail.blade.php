@@ -25,8 +25,10 @@
                     <i class="fa-solid fa-share"></i>
                 </div>
                 <div class="header-icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge">2</span>
+                    <a href="{{ route('cart') }}" style="text-decoration: none; color: inherit;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="cart-badge">{{ $product_in_cart ? $product_in_cart : 0 }}</span>
+                    </a>
                 </div>
                 <div class="header-icon">
                     <i class="fa-solid fa-ellipsis-vertical"></i>

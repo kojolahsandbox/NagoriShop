@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+
 class Cart extends Model
 {
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['user_id', 'product_id', 'variant', 'quantity'];
+    protected $fillable = ['user_id', 'product_id', 'variant_id', 'quantity'];
 
     /**
      * Auto-generate UUID saat creating
@@ -31,5 +32,10 @@ class Cart extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
 }

@@ -16,6 +16,19 @@
                 </div>
             </div>
         @endif
+
+        @if (session('success'))
+            <div class="greeting">
+                <div class="greeting-content">
+                    <div class="greeting-icon">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                    </div>
+                    <div class="greeting-text">
+                        <span class="greeting-text">{{ session('success') }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
     @endauth
     <!-- Banner Slider -->
     <div class="banner-slider">

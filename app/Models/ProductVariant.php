@@ -9,7 +9,7 @@ class ProductVariant extends Model
 {
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['product_id', 'variant', 'price', 'stock'];
+    protected $fillable = ['product_id', 'variant_id', 'price', 'stock'];
 
     /**
      * Auto-generate UUID saat creating

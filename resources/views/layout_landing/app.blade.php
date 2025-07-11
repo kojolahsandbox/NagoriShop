@@ -24,13 +24,15 @@
                     </div>
                 </div>
                 <div class="header-icons">
-                    <div class="cart-icon">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </div>
-                    {{-- <div class="message-icon message-badge">
+                    {{-- <div class="cart-icon">
                         <i class="fa-solid fa-comment"></i>
-                        <span class="badge">6</span>
                     </div> --}}
+                    <div class="message-icon message-badge">
+                        <a href="{{ route('cart') }}" style="text-decoration: none; color: inherit;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span class="badge">{{ $product_in_cart ? $product_in_cart : 0 }}</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

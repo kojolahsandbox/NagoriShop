@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
@@ -9,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
@@ -48,11 +50,20 @@ class LandingController extends Controller
             ->get()
             ->shuffle()
             ->take(6);
+
+        // count product in cart  
+        if (Auth::user()) {
+            $productInCart = Cart::where('user_id', auth()->user()->id)->count();
+        } else {
+            $productInCart = 0;
+        }
+
         $data = [
             'slides' => $slides,
             'products' => $products,
             'best_seller' => $best_seller,
-            'flash_sale' => $flash_sale
+            'flash_sale' => $flash_sale,
+            'product_in_cart' => $productInCart
         ];
 
         return view('landing.index', $data);
@@ -79,9 +90,17 @@ class LandingController extends Controller
             $product->variants = ProductVariant::where('product_id', $product->id)->get();
             $product->seller = User::find($product->seller_id);
 
+            // count product in cart
+            if (Auth::user()) {
+                $productInCart = Cart::where('user_id', auth()->user()->id)->count();
+            } else {
+                $productInCart = 0;
+            }
+
             $data = [
                 'product' => $product,
-                'others' => $others
+                'others' => $others,
+                'product_in_cart' => $productInCart
             ];
 
             return view('landing.show', $data);
@@ -111,9 +130,17 @@ class LandingController extends Controller
 
         $others = Product::inRandomOrder()->take(10)->get();
 
+        // count product in cart
+        if (Auth::user()) {
+            $productInCart = Cart::where('user_id', auth()->user()->id)->count();
+        } else {
+            $productInCart = 0;
+        }
+
         return view('landing.search', [
             'products' => $products,
-            'others' => $others
+            'others' => $others,
+            'product_in_cart' => $productInCart,
         ]);
 
     }
