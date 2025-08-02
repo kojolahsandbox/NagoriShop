@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::post('/confirmation', [CheckoutController::class, 'confirmation'])->name('confirmation');
     Route::get('/checkout/{id}', [CheckoutController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout/cart', [CheckoutController::class, 'checkoutCart'])->name('checkout.cart');
 
     Route::get('/cart', [CheckoutController::class, 'cart'])->name('cart');
     Route::get('/cart/delete/{id}', [CheckoutController::class, 'cartDelete'])->name('cart.delete');

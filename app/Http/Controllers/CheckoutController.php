@@ -320,7 +320,9 @@ class CheckoutController extends Controller
                     'id' => $item->id,
                     'shopName' => $product->seller->name ?? 'Nagori Shop',
                     'title' => $product->name ?? 'Nama Produk',
+                    'product_id' => $product->id ?? 'Id Produk',
                     'variant' => $variant->variant ?? 'Tidak Ada Varian', // 'variant' adalah nama di tabel product_variants
+                    'variant_id' => $item->variant_id,
                     'price' => $product->price,
                     'originalPrice' => ($variant && $variant->price)
                         ? $variant->price * $item->quantity
@@ -431,4 +433,161 @@ class CheckoutController extends Controller
 
         return redirect()->route('cart')->with('success', 'Pesanan berhasil dihapus');
     }
+
+    public function checkoutCart(Request $request)
+    {
+        $data = $request->all();
+        $checkoutData = json_decode($data['checkout_data'], true);
+        $shop = $checkoutData['shop'];
+        $items = $checkoutData['items'];
+        $total = $checkoutData['total'];
+
+        // Pastikan $items selalu dalam bentuk array
+        if (!is_array($items) || isset($items['product_id'])) {
+            $items = [$items];
+        }
+
+        if (!auth()->user()->province || !auth()->user()->city || !auth()->user()->district || !auth()->user()->village) {
+            return redirect()->route('profile')->with('alert', 'Silahkan isi alamat Profil anda terlebih dahulu');
+        }
+
+        // Validasi stok semua item terlebih dahulu
+        foreach ($items as $item) {
+            $productId = $item['product_id'];
+            $quantity = $item['quantity'];
+            $variantId = $item['variant_id'];
+
+            $product = Product::find($productId);
+            $variant = ProductVariant::find($variantId);
+
+            if (!$product) {
+                return view('404');
+            }
+
+            if ($variant) {
+                if ($variant->stock < $quantity) {
+                    return redirect()->route('profile')->with('alert', 'Stok Varian Produk ' . $product->name . ' kurang!');
+                }
+            } else {
+                if ($product->stock < $quantity) {
+                    return redirect()->route('profile')->with('alert', 'Stok Produk ' . $product->name . ' kurang!');
+                }
+            }
+        }
+
+        // Cek apakah sudah ada order belum dibayar
+        $order = Order::where('user_id', auth()->user()->id)
+            ->where('status', 'waiting_payment')
+            ->first();
+        if ($order) {
+            return redirect()->route('profile')->with('alert', 'Anda masih memiliki pesanan yang belum dibayar!');
+        }
+
+        // Buat address baru
+        $province = Province::find(auth()->user()->province);
+        $city = Regency::find(auth()->user()->city);
+        $district = District::find(auth()->user()->district);
+        $village = Village::find(auth()->user()->village);
+        $address = auth()->user()->address . ', ' . $village->name . ', ' . $district->name . ', ' . $city->name . ', ' . $province->name;
+
+        $newAddress = Address::create([
+            'user_id' => auth()->user()->id,
+            'recipient_name' => auth()->user()->name,
+            'phone' => auth()->user()->phone,
+            'address_text' => $address,
+            'is_default' => 1
+        ]);
+
+        $newOrder = Order::create([
+            'user_id' => auth()->user()->id,
+            'address_id' => $newAddress->id,
+            'shipping_fee' => '0',
+            'shipping_status' => 'pending',
+            'payment_method' => 'qris',
+            'note' => null,
+            'status' => 'draft',
+            'total_amount' => $total
+        ]);
+
+        $sellerItems = [];
+
+        // Simpan item ke order
+        foreach ($items as $item) {
+            $product = Product::find($item['product_id']);
+            $variant = ProductVariant::find($item['variant_id']);
+            $quantity = $item['quantity'];
+
+            $unit_price = $variant ? $variant->price : $product->price;
+            $variant_name = $variant ? $variant->variant : '';
+
+            OrderItem::create([
+                'order_id' => $newOrder->id,
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'quantity' => $quantity,
+                'unit_price' => $unit_price,
+                'variant' => $variant_name,
+            ]);
+
+            // Kurangi stok
+            if ($variant) {
+                $variant->decrement('stock', $quantity);
+            } else {
+                $product->decrement('stock', $quantity);
+            }
+
+            $sellerId = $product->seller->id;
+            if (!isset($sellerItems[$sellerId])) {
+                $sellerItems[$sellerId] = [
+                    'seller_name' => $product->seller->name,
+                    'seller_email' => $product->seller->email,
+                    'items' => []
+                ];
+            }
+
+            $sellerItems[$sellerId]['items'][] = [
+                'product_name' => $product->name,
+                'quantity' => $quantity,
+                'variant' => $variant_name,
+            ];
+            // Kirim notifikasi email ke penjual
+            // $mailData = [
+            //     'seller' => $product->seller->name,
+            //     'order_id' => $newOrder->id,
+            //     'title' => 'Konfirmasi Pesanan Pelanggan',
+            //     'body' => 'Konfirmasi Pesanan Pelanggan atas nama ' . auth()->user()->name .
+            //         ' yaitu: ' . $product->name .
+            //         ' sebanyak ' . $quantity .
+            //         ($variant ? ' dengan varian ' . $variant->variant : '')
+            // ];
+            // Mail::to($product->seller->email)->send(new ConfirmationMail($mailData));
+
+        }
+
+        foreach ($sellerItems as $sellerData) {
+            // 1. Buat string HTML ('body') dari daftar item untuk setiap penjual
+            $bodyHtml = 'Pelanggan atas nama <b>' . auth()->user()->name . '</b> telah memesan item berikut:<br><br>';
+            foreach ($sellerData['items'] as $item) {
+                $bodyHtml .= '• Produk: <b>' . $item['product_name'] . '</b><br>';
+                if (!empty($item['variant'])) {
+                    $bodyHtml .= '&nbsp;&nbsp;&nbsp;Varian: ' . $item['variant'] . '<br>';
+                }
+                $bodyHtml .= '&nbsp;&nbsp;&nbsp;Jumlah: ' . $item['quantity'] . ' pcs<br><br>';
+            }
+
+            // 2. Siapkan data email dengan key 'body' yang diharapkan oleh Blade
+            $mailData = [
+                'seller' => $sellerData['seller_name'],
+                'order_id' => $newOrder->id,
+                'title' => 'Konfirmasi Pesanan Pelanggan',
+                'body' => $bodyHtml // <-- 'body' sekarang berisi string HTML yang detail
+            ];
+
+            // 3. Kirim email
+            Mail::to($sellerData['seller_email'])->send(new ConfirmationMail($mailData));
+        }
+
+        return redirect()->route('profile')->with('success', 'Pesanan anda berhasil dibuat!');
+    }
+
 }

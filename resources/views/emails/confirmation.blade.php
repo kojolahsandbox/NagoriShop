@@ -25,7 +25,7 @@
                     Segera Konfirmasi Pesanan Pelanggan Anda:
                 </p>
                 <p style="font-size: 16px; color: #333;">
-                    {{ $mailData['body'] }}
+                    {!! $mailData['body'] !!}
                 </p>
 
                 <div style="text-align: center; margin: 30px 0;">
