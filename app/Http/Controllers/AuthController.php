@@ -50,7 +50,7 @@ class AuthController extends Controller
             // Optional: redirect sesuai role
             switch (Auth::user()->role) {
                 case 'administrator':
-                    return redirect()->intended('/admin');
+                    return redirect()->intended('/administrator');
                 case 'seller':
                     return redirect()->intended('/seller');
                 case 'customer':
@@ -144,4 +144,12 @@ class AuthController extends Controller
         }
     }
 
+
+    public function AdministratorShowLoginForm()
+    {
+        $data = [
+            'title' => 'Login',
+        ];
+        return view('administrator.auth.login_administrator', $data);
+    }
 }
