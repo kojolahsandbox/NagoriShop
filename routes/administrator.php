@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdministratorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/administrator/login', [AuthController::class, 'AdministratorShowLoginForm'])->name('AdministratorLogin');
 Route::post('/administrator/login', [AuthController::class, 'login']);
@@ -27,4 +28,10 @@ Route::middleware(['web', 'auth', 'role:administrator'])->prefix('administrator'
                 'index' => 'customers.index',
                 'destroy' => 'customers.destroy',
             ]);
+
+    Route::resource('orders', OrderController::class)->names([
+        'index' => 'orders.index',
+        'show' => 'orders.show',
+        'update' => 'orders.update',
+    ]);
 });
