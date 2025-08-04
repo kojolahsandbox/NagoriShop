@@ -318,7 +318,7 @@ class CheckoutController extends Controller
 
                 return [
                     'id' => $item->id,
-                    'shopName' => $product->seller->name ?? 'Nagori Shop',
+                    'shopName' => $product->seller->name ?? 'Kodai Nagori',
                     'title' => $product->name ?? 'Nama Produk',
                     'product_id' => $product->id ?? 'Id Produk',
                     'variant' => $variant->variant ?? 'Tidak Ada Varian', // 'variant' adalah nama di tabel product_variants

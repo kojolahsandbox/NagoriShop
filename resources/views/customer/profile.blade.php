@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ $title }} - Nagori Shop</title>
+    <title>{{ $title }} - Kodai Nagori</title>
     <link rel="stylesheet" href="{{ asset('assets/css/profile.css') }}">
 </head>
 
@@ -378,7 +378,7 @@
                 id: 4,
                 type: "system",
                 title: "Update Aplikasi Tersedia",
-                message: "Versi terbaru aplikasi Nagori Shop telah tersedia dengan fitur-fitur menarik.",
+                message: "Versi terbaru aplikasi Kodai Nagori telah tersedia dengan fitur-fitur menarik.",
                 time: "2 hari lalu",
                 unread: false,
             },

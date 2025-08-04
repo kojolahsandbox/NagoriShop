@@ -4,7 +4,65 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>@yield('title') - Nagori Shop</title>
+    <title>@yield('title')</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+        content="Kodai Nagori adalah platform ecommerce yang menjual produk pertanian, peternakan, dan UMKM dari desa. Belanja produk berkualitas langsung dari petani dan pengusaha desa.">
+
+    <!-- Meta Keywords (optional, used to help with SEO but not a major ranking factor) -->
+    <meta name="keywords"
+        content="produk pertanian desa, produk peternakan desa, ecommerce UMKM desa, belanja produk desa, hasil pertanian desa, produk UMKM desa, pasar online desa, belanja online pertanian, belanja hasil pertanian">
+
+    <!-- Meta Robots (Directs search engines to index or follow pages) -->
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical Link (to avoid duplicate content issues) -->
+    <link rel="canonical" href="https://kodai.nagori.id/">
+
+    <!-- Open Graph Meta Tags for Social Media Sharing -->
+    <meta property="og:title" content="Belanja Produk Pertanian, Peternakan & UMKM Desa - Kodai Nagori">
+    <meta property="og:description"
+        content="Kodai Nagori adalah ecommerce untuk produk pertanian, peternakan, dan UMKM desa. Menjangkau lebih banyak konsumen untuk hasil produk berkualitas langsung dari desa.">
+    <meta property="og:image" content="https://kojolahsandbox.github.io/Logo/Kojolah-Sandbox-Logo.png">
+    <!-- Link gambar thumbnail -->
+    <meta property="og:url" content="https://kodai.nagori.id/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags for Twitter Sharing -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Belanja Produk Pertanian, Peternakan & UMKM Desa - Kodai Nagori">
+    <meta name="twitter:description"
+        content="Kodai Nagori adalah ecommerce untuk produk pertanian, peternakan, dan UMKM desa. Temukan berbagai produk berkualitas dari desa langsung ke tangan Anda.">
+    <meta name="twitter:image" content="https://kojolahsandbox.github.io/Logo/Kojolah-Sandbox-Logo.png">
+    <!-- Link gambar thumbnail -->
+    <meta name="twitter:site" content="@kojolah">
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://www.kojolah.com/favicon.ico" type="image/x-icon">
+
+    <!-- Structured Data (JSON-LD for Local Business Schema) -->
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "name": "Kodai Nagori",
+          "url": "https://kodai.nagori.id/",
+          "logo": "https://kojolahsandbox.github.io/Logo/Kojolah-Sandbox-Logo.png",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+62-11-6623-73",
+            "contactType": "Customer Service",
+            "areaServed": "ID",
+            "availableLanguage": "Indonesian"
+          },
+          "sameAs": [
+            "https://www.facebook.com/kojolahsandbox",
+            "https://x.com/kojolah",
+            "http://instagram.com/kojolah"
+          ]
+        }
+        </script>
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>

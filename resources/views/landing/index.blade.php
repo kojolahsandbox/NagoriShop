@@ -1,4 +1,4 @@
-@section('title', 'Selamat Datang')
+@section('title', 'Belanja Produk Pertanian, Peternakan & UMKM Desa - Kodai Nagori')
 
 @extends('layout_landing.app')
 
