@@ -26,7 +26,7 @@ class AdministratorController extends Controller
             DB::raw('SUM(total_amount) as total')
         )
             ->where('created_at', '>=', Carbon::now()->subYear())
-            ->whereIn('status', ['paid', 'shipped', 'completed'])
+            ->whereIn('status', ['completed'])
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')

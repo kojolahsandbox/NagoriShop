@@ -11,6 +11,7 @@ use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LandingController extends Controller
 {
@@ -37,13 +38,27 @@ class LandingController extends Controller
         $products = $products->sortByDesc('created_at');
 
         // 6 products best seller
-        $best_seller = Product::select('products.*')
+        $best_seller = Product::select(
+            'products.id',
+            'products.name',
+            'products.image',
+            'products.price',
+            'products.seller_id',
+            DB::raw('SUM(order_items.quantity) as total_quantity')
+        )
             ->join('order_items', 'products.id', '=', 'order_items.product_id')
-            ->selectRaw('products.*, SUM(order_items.quantity) as total_quantity')
-            ->groupBy('products.id')
+            ->groupBy(
+                'products.id',
+                'products.name',
+                'products.image',
+                'products.price',
+                'products.seller_id'
+            )
             ->orderByDesc('total_quantity')
             ->take(4)
             ->get();
+
+
 
         // product with category flash sale 
         $flash_sale = Product::where('category', 'flash sale')
