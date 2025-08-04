@@ -24,7 +24,15 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'role',
+        'status',
+        'province',
+        'city',
+        'district',
+        'village',
+        'address',
     ];
 
     protected static function booted()

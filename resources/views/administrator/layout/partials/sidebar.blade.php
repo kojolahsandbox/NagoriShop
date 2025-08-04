@@ -57,10 +57,12 @@
                         <p>
                             Laporan
                         </p>
+                        <span class="right badge badge-warning">Soon</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#!" class="nav-link">
+                    <a href="{{ route(name: 'sellers.index') }}"
+                        class="nav-link {{ Route::is('sellers.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             Penjual
@@ -68,7 +70,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#!" class="nav-link">
+                    <a href="{{ route(name: 'settings.index') }}"
+                        class="nav-link {{ Route::is('settings.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p>
                             Pengaturan

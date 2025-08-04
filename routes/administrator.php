@@ -7,6 +7,8 @@ use App\Http\Controllers\AdministratorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SellerController;
+use App\Http\Controllers\SettingController;
 
 Route::get('/administrator/login', [AuthController::class, 'AdministratorShowLoginForm'])->name('AdministratorLogin');
 Route::post('/administrator/login', [AuthController::class, 'login']);
@@ -34,4 +36,9 @@ Route::middleware(['web', 'auth', 'role:administrator'])->prefix('administrator'
         'show' => 'orders.show',
         'update' => 'orders.update',
     ]);
+
+    Route::resource('sellers', SellerController::class)->names('sellers');
+
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
 });
