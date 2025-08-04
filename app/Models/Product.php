@@ -10,7 +10,7 @@ class Product extends Model
 {
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['name', 'description', 'image', 'price', 'category', 'stock'];
+    protected $fillable = ['seller_id', 'name', 'description', 'image', 'price', 'category', 'stock'];
 
     /**
      * Auto-generate UUID saat creating

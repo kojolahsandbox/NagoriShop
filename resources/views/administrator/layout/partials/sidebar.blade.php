@@ -21,7 +21,8 @@
                 data-accordion="false">
                 <li class="nav-header">Menu</li>
                 <li class="nav-item">
-                    <a href="{{ route('administrator') }}" class="nav-link">
+                    <a href="{{ route('administrator') }}"
+                        class="nav-link {{ Route::is('administrator') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
@@ -33,7 +34,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#!" class="nav-link">
+                    <a href="{{ route('products.index') }}"
+                        class="nav-link {{ Route::is('products.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-box"></i>
                         <p>
                             Produk
@@ -41,7 +43,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#!" class="nav-link">
+                    <a href="{{ route('customers.index') }}"
+                        class="nav-link {{ Route::is('customers.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Pelanggan
@@ -58,9 +61,9 @@
                 </li>
                 <li class="nav-item">
                     <a href="#!" class="nav-link">
-                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <i class="nav-icon fas fa-user"></i>
                         <p>
-                            Analitik
+                            Penjual
                         </p>
                     </a>
                 </li>

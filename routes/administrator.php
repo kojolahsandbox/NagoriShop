@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdministratorController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/administrator/login', [AuthController::class, 'AdministratorShowLoginForm'])->name('AdministratorLogin');
 Route::post('/administrator/login', [AuthController::class, 'login']);
@@ -15,4 +17,14 @@ Route::middleware(['web', 'auth', 'role:administrator'])->prefix('administrator'
     Route::get('/users', function () {
         return 'Manajemen Pengguna';
     })->name('admin.users');
+
+    Route::resource('products', ProductController::class);
+
+    Route::resource('customers', CustomerController::class)->only([
+        'index',
+        'destroy'
+    ])->names([
+                'index' => 'customers.index',
+                'destroy' => 'customers.destroy',
+            ]);
 });
