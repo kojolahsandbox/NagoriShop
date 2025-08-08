@@ -160,39 +160,47 @@
         </div>
     </div>
 
-    <!-- Banner Pasang Aplikasi -->
     <div id="installBanner">
         <span>🚀 Pasang aplikasi ini untuk pengalaman lebih baik!</span>
         <button id="installBtn">Pasang Aplikasi</button>
     </div>
 
-    <!-- Spasi untuk konten agar tidak tertutup banner -->
     <div class="content-spacing">
-        <!-- Konten lain di sini -->
         <p>Selamat datang di aplikasi kami!</p>
     </div>
 
     <script>
         let deferredPrompt;
-        window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
 
-            const installBanner = document.getElementById("installBanner");
-            installBanner.style.display = "flex";
+        const isInStandaloneMode = () =>
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
 
-            document.getElementById("installBtn").addEventListener("click", () => {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === "accepted") {
-                console.log("Aplikasi dipasang!");
-                }
-                deferredPrompt = null;
-                installBanner.style.display = "none";
+        
+        if (isInStandaloneMode()) {
+            document.getElementById("installBanner").style.display = "none";
+        } else {
+            window.addEventListener("beforeinstallprompt", (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+
+                const installBanner = document.getElementById("installBanner");
+                installBanner.style.display = "flex";
+
+                document.getElementById("installBtn").addEventListener("click", () => {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === "accepted") {
+                            console.log("Aplikasi dipasang!");
+                        }
+                        deferredPrompt = null;
+                        installBanner.style.display = "none";
+                    });
+                });
             });
-            });
-        });
+        }
     </script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
