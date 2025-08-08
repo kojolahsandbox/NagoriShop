@@ -65,6 +65,23 @@
         </script>
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#980000">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="KODAI NAGORI">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="/splash/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="/splash/launch-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="/splash/launch-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="/splash/launch-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="/splash/launch-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
+    <!-- Tambah lebih banyak jika ingin support iPad -->
+
 </head>
 
 <body>
@@ -143,6 +160,40 @@
         </div>
     </div>
 
+    <!-- Banner Pasang Aplikasi -->
+    <div id="installBanner">
+        <span>🚀 Pasang aplikasi ini untuk pengalaman lebih baik!</span>
+        <button id="installBtn">Pasang Aplikasi</button>
+    </div>
+
+    <!-- Spasi untuk konten agar tidak tertutup banner -->
+    <div class="content-spacing">
+        <!-- Konten lain di sini -->
+        <p>Selamat datang di aplikasi kami!</p>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            const installBanner = document.getElementById("installBanner");
+            installBanner.style.display = "flex";
+
+            document.getElementById("installBtn").addEventListener("click", () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                console.log("Aplikasi dipasang!");
+                }
+                deferredPrompt = null;
+                installBanner.style.display = "none";
+            });
+            });
+        });
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
     <script>
@@ -162,6 +213,15 @@
     </script>
 
     @yield('script')
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/service-worker.js")
+            .then(reg => console.log("Service Worker registered:", reg.scope))
+            .catch(err => console.error("Service Worker failed:", err));
+        }
+    </script>
+
 </body>
 
 </html>
