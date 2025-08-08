@@ -222,13 +222,13 @@
 
     @yield('script')
 
-    <script>
+    {{-- <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/service-worker.js")
             .then(reg => console.log("Service Worker registered:", reg.scope))
             .catch(err => console.error("Service Worker failed:", err));
         }
-    </script>
+    </script> --}}
 
 </body>
 
